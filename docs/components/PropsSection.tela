@@ -1,0 +1,64 @@
+component PropsSection {
+  state propsCode: String = ""
+  state propsUsageCode: String = ""
+
+  onMount {
+    propsCode = window.TELA_DOCS.propsCode
+    propsUsageCode = window.TELA_DOCS.propsUsageCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Props"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Props let parent components pass data down to children. Declare them with the prop keyword. They behave like read-only state inside the component."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Declaring Props"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "A Badge component with label and color props:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${propsCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "Passing Props"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Pass props using key: value pairs inside the component tag:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${propsUsageCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Callback Props"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" }
+        content: "Use prop type Function to pass callbacks from parent to child. This is how child components communicate upward: the parent passes a function reference and the child calls it on events."
+      }
+    }
+  }
+}

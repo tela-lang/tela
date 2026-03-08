@@ -1,0 +1,47 @@
+component Introduction {
+  state featText: String = ""
+
+  onMount {
+    featText = window.TELA_DOCS.introFeatures
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Introduction"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela is a compiled, component-based UI language. Write components in .tela files with a unified syntax for structure, style, and logic."
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "32px" }
+        content: "The compiler outputs plain JS and CSS with no framework dependency at runtime. Drop the output into any web project with no build tool configuration required."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Key Features"
+      }
+      div {
+        style { background: "#f0faf8" border-left: "4px solid #34786e" border-radius: "0 8px 8px 0" padding: "20px 24px" }
+        pre {
+          style { margin: 0 font-size: "14px" color: "#1a4a42" line-height: "1.8" white-space: "pre-wrap" font-family: "system-ui, sans-serif" }
+          content: "${featText}"
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Philosophy"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" }
+        content: "Tela follows the principle that the browser already has everything you need. Rather than shipping a large runtime framework, Tela compiles your components to efficient JavaScript that communicates with a minimal reactive runtime."
+      }
+    }
+  }
+}

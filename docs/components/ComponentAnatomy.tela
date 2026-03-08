@@ -1,0 +1,101 @@
+component ComponentAnatomy {
+  state anatomyCode: String = ""
+
+  onMount {
+    anatomyCode = window.TELA_DOCS.anatomyCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Component Anatomy"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Every Tela component lives in a single .tela file. It contains five sections: state, props, functions, lifecycle hooks, and the view."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "A Complete Component"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Here is a counter component showing all five parts in action:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${anatomyCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "The Five Sections"
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "12px" }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-size: "15px" }
+            content: "1. state"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Reactive data local to the component. Any state change triggers a targeted DOM update."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-size: "15px" }
+            content: "2. prop"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Values passed in from a parent component. Props are read-only inside the component."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-size: "15px" }
+            content: "3. function"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Logic blocks that can read and update state, call fetch, or emit events. Use async for async operations."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-size: "15px" }
+            content: "4. onMount / onUpdate / onDestroy"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Lifecycle hooks that run at specific points in the component lifespan."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-size: "15px" }
+            content: "5. view"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "The declarative template that describes the DOM. Uses interpolation, control flow, and child components."
+          }
+        }
+      }
+    }
+  }
+}

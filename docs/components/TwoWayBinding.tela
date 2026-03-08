@@ -1,0 +1,54 @@
+component TwoWayBinding {
+  state bindCode: String = ""
+
+  onMount {
+    bindCode = window.TELA_DOCS.bindCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Two-way Binding"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Two-way binding connects an input element to a state variable. When the user types, the state updates. When state changes programmatically, the input reflects the new value."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "The bind Directive"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Use bind value: stateName on any input, textarea, or select element:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${bindCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "How It Works"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "16px" }
+        content: "The compiler expands bind value: query into two things: an input event listener that sets query = event.target.value, and a value attribute that reads query. This is pure syntactic sugar — no magic wiring at runtime."
+      }
+      div {
+        style { background: "#f0faf8" border-left: "4px solid #34786e" border-radius: "0 8px 8px 0" padding: "16px 20px" }
+        p {
+          style { margin: 0 font-size: "14px" color: "#1a4a42" line-height: "1.7" }
+          content: "You can combine bind with @input or @change handlers. The handler fires after the state has already been updated from the bind directive."
+        }
+      }
+    }
+  }
+}

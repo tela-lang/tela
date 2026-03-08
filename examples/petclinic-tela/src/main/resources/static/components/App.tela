@@ -1,0 +1,106 @@
+component App {
+  state page: String = "home"
+
+  function goHome() { page = "home" }
+  function goOwners() { page = "owners" }
+  function goPets() { page = "pets" }
+  function goVets() { page = "vets" }
+  function goVisits() { page = "visits" }
+
+  view {
+    div {
+      style { font-family: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif" }
+
+      nav {
+        style {
+          background: "#34786e"
+          padding: 0
+          display: "flex"
+          align-items: "center"
+        }
+        div {
+          style { padding: "12px 24px" }
+          span {
+            style { color: "white" font-size: "22px" font-weight: "700" }
+            content: "🐾 PetClinic"
+          }
+        }
+        button {
+          style {
+            background: "transparent"
+            color: "white"
+            border: "none"
+            padding: "16px 20px"
+            cursor: "pointer"
+            font-size: "15px"
+          }
+          content: "Home"
+          @click: goHome
+        }
+        button {
+          style {
+            background: "transparent"
+            color: "white"
+            border: "none"
+            padding: "16px 20px"
+            cursor: "pointer"
+            font-size: "15px"
+          }
+          content: "Owners"
+          @click: goOwners
+        }
+        button {
+          style {
+            background: "transparent"
+            color: "white"
+            border: "none"
+            padding: "16px 20px"
+            cursor: "pointer"
+            font-size: "15px"
+          }
+          content: "Pets"
+          @click: goPets
+        }
+        button {
+          style {
+            background: "transparent"
+            color: "white"
+            border: "none"
+            padding: "16px 20px"
+            cursor: "pointer"
+            font-size: "15px"
+          }
+          content: "Vets"
+          @click: goVets
+        }
+        button {
+          style {
+            background: "transparent"
+            color: "white"
+            border: "none"
+            padding: "16px 20px"
+            cursor: "pointer"
+            font-size: "15px"
+          }
+          content: "Visits"
+          @click: goVisits
+        }
+      }
+
+      div {
+        style { padding: "24px" max-width: "960px" margin: "0 auto" }
+        if (page === "home") {
+          Home { goOwners: goOwners goPets: goPets goVets: goVets goVisits: goVisits }
+        } else if (page === "owners") {
+          Owners {}
+        } else if (page === "pets") {
+          Pets {}
+        } else if (page === "vets") {
+          Vets {}
+        } else {
+          Visits {}
+        }
+      }
+    }
+  }
+}

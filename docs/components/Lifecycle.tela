@@ -1,0 +1,75 @@
+component Lifecycle {
+  state lifecycleCode: String = ""
+
+  onMount {
+    lifecycleCode = window.TELA_DOCS.lifecycleCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Lifecycle Hooks"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela provides three lifecycle hooks that let you run code at specific points during a component's life in the DOM."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Example"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${lifecycleCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Hook Reference"
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "12px" }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-family: "monospace" font-size: "15px" }
+            content: "onMount"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Runs once after the component is first inserted into the DOM. Use it to load data, set up subscriptions, or read DOM measurements."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-family: "monospace" font-size: "15px" }
+            content: "onUpdate"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Runs after every re-render triggered by a state change. Useful for syncing third-party widgets or measuring updated layout."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#34786e" margin-bottom: "4px" font-family: "monospace" font-size: "15px" }
+            content: "onDestroy"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Runs when the component is removed from the DOM. Use it to clear timers, remove event listeners, or cancel pending requests."
+          }
+        }
+      }
+    }
+  }
+}

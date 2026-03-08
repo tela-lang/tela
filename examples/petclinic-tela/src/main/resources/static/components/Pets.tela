@@ -1,0 +1,158 @@
+component Pets {
+  state pets: Array = []
+  state loading: Boolean = true
+  state showForm: Boolean = false
+  state newName: String = ""
+  state newBirthDate: String = ""
+  state newType: String = ""
+  state newOwnerId: String = ""
+
+  onMount {
+    loadPets()
+  }
+
+  async function loadPets() {
+    loading = true
+    response = await fetch("/api/pets")
+    pets = await response.json()
+    loading = false
+  }
+
+  async function addPet() {
+    response = await fetch("/api/pets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: newName, birthDate: newBirthDate, type: newType, ownerId: newOwnerId }) })
+    newPet = await response.json()
+    pets = pets.concat([newPet])
+    newName = ""
+    newBirthDate = ""
+    newType = ""
+    newOwnerId = ""
+    showForm = false
+  }
+
+  async function deletePet(id) {
+    await fetch("/api/pets/" + id, { method: "DELETE" })
+    response = await fetch("/api/pets")
+    pets = await response.json()
+  }
+
+  function toggleForm() {
+    showForm = !showForm
+  }
+
+  view {
+    div {
+      div {
+        style { display: "flex" justify-content: "space-between" align-items: "center" margin-bottom: "24px" }
+        h2 { style { margin: 0 color: "#2c3e50" } content: "Pets" }
+        button {
+          style {
+            background: "#34786e"
+            color: "white"
+            border: "none"
+            padding: "10px 20px"
+            border-radius: "6px"
+            cursor: "pointer"
+            font-size: "14px"
+          }
+          content: "Add Pet"
+          @click: toggleForm
+        }
+      }
+
+      if (showForm) {
+        div {
+          style {
+            background: "white"
+            border: "1px solid #e0e0e0"
+            border-radius: "8px"
+            padding: "24px"
+            margin-bottom: "24px"
+          }
+          h3 { style { margin: "0 0 16px" color: "#34786e" } content: "New Pet" }
+          div {
+            style { display: "grid" grid-template-columns: "1fr 1fr" gap: "12px" }
+            input {
+              bind value: newName
+              placeholder: "Pet Name"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newType
+              placeholder: "Type (cat, dog, bird…)"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newBirthDate
+              placeholder: "Birth Date (YYYY-MM-DD)"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newOwnerId
+              placeholder: "Owner ID"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+          }
+          div {
+            style { margin-top: "16px" display: "flex" gap: "8px" }
+            button {
+              style { background: "#34786e" color: "white" border: "none" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Save"
+              @click: addPet
+            }
+            button {
+              style { background: "#f5f5f5" color: "#333" border: "1px solid #ddd" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Cancel"
+              @click: toggleForm
+            }
+          }
+        }
+      }
+
+      if (loading) {
+        p { style { color: "#888" } content: "Loading..." }
+      } else {
+        div {
+          style { background: "white" border-radius: "8px" box-shadow: "0 2px 4px rgba(0,0,0,0.05)" overflow: "hidden" }
+          table {
+            style { width: "100%" border-collapse: "collapse" }
+            thead {
+              tr {
+                style { background: "#f8f9fa" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Name" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Type" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Birth Date" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Owner ID" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Actions" }
+              }
+            }
+            tbody {
+              for (p in pets) {
+                tr {
+                  style { border-bottom: "1px solid #f0f0f0" }
+                  td { style { padding: "12px 16px" font-weight: "500" } content: "${p.name}" }
+                  td {
+                    style { padding: "12px 16px" }
+                    span {
+                      style { background: "#e8f5e9" color: "#2e7d32" padding: "2px 10px" border-radius: "12px" font-size: "13px" }
+                      content: "${p.type}"
+                    }
+                  }
+                  td { style { padding: "12px 16px" color: "#666" } content: "${p.birthDate}" }
+                  td { style { padding: "12px 16px" color: "#888" } content: "#${p.ownerId}" }
+                  td {
+                    style { padding: "12px 16px" }
+                    button {
+                      style { background: "#ff4444" color: "white" border: "none" padding: "4px 12px" border-radius: "4px" cursor: "pointer" font-size: "13px" }
+                      content: "Delete"
+                      @click: deletePet(p.id)
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

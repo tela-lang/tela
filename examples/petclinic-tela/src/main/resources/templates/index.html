@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spring PetClinic — Tela</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #f0f4f3; min-height: 100vh; }
+    #app { min-height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <link rel="stylesheet" href="/components/App.css">
+  <link rel="stylesheet" href="/components/Home.css">
+  <link rel="stylesheet" href="/components/Owners.css">
+  <link rel="stylesheet" href="/components/Pets.css">
+  <link rel="stylesheet" href="/components/Vets.css">
+  <link rel="stylesheet" href="/components/Visits.css">
+  <script src="https://unpkg.com/@tela-lang/tela@latest/dist/runtime.umd.js"></script>
+  <script src="/components/Home.js"></script>
+  <script src="/components/Owners.js"></script>
+  <script src="/components/Pets.js"></script>
+  <script src="/components/Vets.js"></script>
+  <script src="/components/Visits.js"></script>
+  <script src="/components/App.js"></script>
+  <script>
+    Tela.render(App, document.getElementById('app'));
+  </script>
+</body>
+</html>

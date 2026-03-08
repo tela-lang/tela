@@ -1,0 +1,63 @@
+component EventsSection {
+  state eventsCode: String = ""
+  state eventsArgCode: String = ""
+
+  onMount {
+    eventsCode = window.TELA_DOCS.eventsCode
+    eventsArgCode = window.TELA_DOCS.eventsArgCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Events"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Attach event handlers using the @ prefix on any element attribute. Tela supports all standard DOM events: click, input, submit, change, keydown, and more."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Basic Event Handling"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Reference a function by name or call it with arguments:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${eventsCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "Passing Arguments"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Call handlers with arguments inside for loops to pass the current item's data:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${eventsArgCode}" }
+        }
+      }
+      div {
+        style { background: "#f0faf8" border-left: "4px solid #34786e" border-radius: "0 8px 8px 0" padding: "16px 20px" }
+        p {
+          style { margin: 0 font-size: "14px" color: "#1a4a42" line-height: "1.7" }
+          content: "Event handlers on component tags (uppercase names) become prop-based callbacks rather than DOM event listeners."
+        }
+      }
+    }
+  }
+}
