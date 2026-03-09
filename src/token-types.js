@@ -52,6 +52,7 @@ const Keywords = [
   // Declarations
   'enum',
   'model',
+  'route',
 ];
 
 module.exports = {

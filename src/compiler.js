@@ -55,17 +55,38 @@ class Compiler {
     component.state.forEach(s => this.stateVariables.add(s.name));
     component.props.forEach(p => this.propVariables.add(p.name));
     (component.computed || []).forEach(c => this.computedVariables.add(c.name));
+    // Route vars behave like state (reads/writes go through state_X.name)
+    (component.routes || []).forEach(r => this.stateVariables.add(r.name));
 
-    const stateInit = component.state.map(s => {
-      const value = s.defaultValue
-        ? this.compileExpression(s.defaultValue, new Set(), component.name)
-        : 'null';
-      return `${s.name}: ${value}`;
-    }).join(',\n      ');
+    const stateInit = [
+      ...component.state.map(s => {
+        const value = s.defaultValue
+          ? this.compileExpression(s.defaultValue, new Set(), component.name)
+          : 'null';
+        return `${s.name}: ${value}`;
+      }),
+      ...(component.routes || []).map(r => `${r.name}: window.location.pathname`)
+    ].join(',\n      ');
 
     const functions = component.functions
       .map(fn => this.compileFunction(fn, component.name))
       .join('\n\n    ');
+
+    // Routing setup: navigate() + popstate listener + cleanup
+    const userFunctionNames = new Set((component.functions || []).map(f => f.name));
+    const routeSetup = (component.routes || []).map(r => {
+      const statePath = `state_${component.name}.${r.name}`;
+      const handlerName = `_onPopState_${r.name}`;
+      const cleanupName = `_routeCleanup_${r.name}`;
+      const navigateFn = userFunctionNames.has('navigate') ? '' :
+        `const navigate = (dest) => {\n      window.history.pushState(null, '', dest);\n      ${statePath} = dest;\n      instance.update();\n    };`;
+      return [
+        navigateFn,
+        `const ${handlerName} = () => { ${statePath} = window.location.pathname; instance.update(); };`,
+        `window.addEventListener('popstate', ${handlerName});`,
+        `const ${cleanupName} = () => { window.removeEventListener('popstate', ${handlerName}); };`
+      ].filter(Boolean).join('\n    ');
+    }).join('\n\n    ');
 
     // Lifecycle hooks
     // onMount runs inline in setup() so it has closure access to state/functions.
@@ -76,10 +97,27 @@ class Compiler {
       : '';
 
     const otherHooks = (component.lifecycleHooks || []).filter(h => h.hookName !== 'onMount');
+
+    // Append route cleanup to onDestroy if there are route declarations
+    const routeCleanupCalls = (component.routes || [])
+      .map(r => `_routeCleanup_${r.name}();`)
+      .join('\n      ');
+
     const lifecycleProps = otherHooks.map(hook => {
-      const body = this.compileStatements(hook.body, component.name);
+      let body = this.compileStatements(hook.body, component.name);
+      if (hook.hookName === 'onDestroy' && routeCleanupCalls) {
+        body = `${body}\n      ${routeCleanupCalls}`;
+      }
       return `${hook.hookName}: function() {\n      ${body}\n    }`;
-    }).join(',\n    ');
+    });
+
+    // If there are routes but no onDestroy hook, emit one for cleanup
+    const hasOnDestroy = otherHooks.some(h => h.hookName === 'onDestroy');
+    if (routeCleanupCalls && !hasOnDestroy) {
+      lifecycleProps.push(`onDestroy: function() {\n      ${routeCleanupCalls}\n    }`);
+    }
+
+    const lifecyclePropsStr = lifecycleProps.join(',\n    ');
 
     // Computed properties
     const computedGetters = (component.computed || []).map(cp => {
@@ -103,8 +141,8 @@ class Compiler {
       ? `watchers: {\n      ${watcherEntries}\n    },`
       : '';
 
-    const lifecycleBlock = lifecycleProps
-      ? `${lifecycleProps},`
+    const lifecycleBlock = lifecyclePropsStr
+      ? `${lifecyclePropsStr},`
       : '';
 
     const exportKeyword = component.exported ? 'export ' : '';
@@ -118,6 +156,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
     const state_${component.name} = Tela.reactive({
       ${stateInit}
     }, instance.update, ${watcherEntries ? `{ ${watcherEntries} }` : '{}'});
+
+    ${routeSetup}
 
     ${computedBlock}
 

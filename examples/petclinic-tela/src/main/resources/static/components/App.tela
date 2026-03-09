@@ -1,13 +1,5 @@
 component App {
-  state page: String = "home"
-
-  function navigate(p) { page = p }
-
-  function goHome()   { navigate("home") }
-  function goOwners() { navigate("owners") }
-  function goPets()   { navigate("pets") }
-  function goVets()   { navigate("vets") }
-  function goVisits() { navigate("visits") }
+  route path: String
 
   view {
     div {
@@ -30,45 +22,43 @@ component App {
         button {
           style { background: "transparent" color: "white" border: "none" padding: "16px 20px" cursor: "pointer" font-size: "15px" }
           content: "Home"
-          @click: goHome
+          @click: navigate("/")
         }
         button {
           style { background: "transparent" color: "white" border: "none" padding: "16px 20px" cursor: "pointer" font-size: "15px" }
           content: "Owners"
-          @click: goOwners
+          @click: navigate("/owners")
         }
         button {
           style { background: "transparent" color: "white" border: "none" padding: "16px 20px" cursor: "pointer" font-size: "15px" }
           content: "Pets"
-          @click: goPets
+          @click: navigate("/pets")
         }
         button {
           style { background: "transparent" color: "white" border: "none" padding: "16px 20px" cursor: "pointer" font-size: "15px" }
           content: "Vets"
-          @click: goVets
+          @click: navigate("/vets")
         }
         button {
           style { background: "transparent" color: "white" border: "none" padding: "16px 20px" cursor: "pointer" font-size: "15px" }
           content: "Visits"
-          @click: goVisits
+          @click: navigate("/visits")
         }
       }
 
       div {
         style { padding: "24px" max-width: "960px" margin: "0 auto" }
-        switch (page) {
-          case "home":
-            Home { goOwners: goOwners goPets: goPets goVets: goVets goVisits: goVisits }
-          case "owners":
+        switch (path) {
+          case "/owners":
             Owners {}
-          case "pets":
+          case "/pets":
             Pets {}
-          case "vets":
+          case "/vets":
             Vets {}
-          case "visits":
+          case "/visits":
             Visits {}
           default:
-            Home { goOwners: goOwners goPets: goPets goVets: goVets goVisits: goVisits }
+            Home {}
         }
       }
     }

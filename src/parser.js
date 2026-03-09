@@ -126,6 +126,7 @@ class Parser {
       lifecycleHooks: [],
       computed: [],
       watchers: [],
+      routes: [],
       view: null
     };
 
@@ -149,6 +150,11 @@ class Parser {
         body.computed.push(this.parseComputedProp());
       } else if (token.type === TokenType.KEYWORD && token.value === 'watch') {
         body.watchers.push(this.parseWatcher());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'route') {
+        if (body.routes.length > 0) {
+          throw new Error(`Only one 'route' declaration is allowed per component (line ${token.line})`);
+        }
+        body.routes.push(this.parseRouteDecl());
       } else {
         throw new Error(`Unexpected token in component body: '${token.value}' at line ${token.line}`);
       }
@@ -255,6 +261,14 @@ class Parser {
     const body = this.parseStatements();
     this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
     return { type: ASTType.WATCHER, target, body };
+  }
+
+  parseRouteDecl() {
+    this.consume(TokenType.KEYWORD, "Expected 'route'", 'route');
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected route variable name').value;
+    this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+    const valueType = this.consume(TokenType.IDENTIFIER, 'Expected type').value;
+    return { type: ASTType.ROUTE_DECLARATION, name, valueType };
   }
 
   // --- Statement Parsing (function / lifecycle bodies) ---

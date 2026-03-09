@@ -61,6 +61,9 @@ const ASTType = {
   ENUM_DECL: 'EnumDeclaration',
   MODEL_DECL: 'ModelDeclaration',
 
+  // Routing
+  ROUTE_DECLARATION: 'RouteDeclaration',
+
   // Optional chaining
   OPTIONAL_CHAIN: 'OptionalChain',
 
