@@ -188,10 +188,13 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
     if (element.styles.length > 0) {
       const staticStyleProps = [];
       const dynamicStyleProps = [];
+      const mediaQueries = [];
 
       element.styles.forEach(block => {
         block.properties.forEach(prop => {
-          if (prop.value.type === ASTType.LITERAL) {
+          if (prop.type === ASTType.MEDIA_QUERY) {
+            mediaQueries.push(prop);
+          } else if (prop.value.type === ASTType.LITERAL) {
             staticStyleProps.push(`${prop.name}: ${prop.value.value}`);
           } else {
             const val = this.compileExpression(prop.value, locals, componentName);
@@ -200,10 +203,20 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
         });
       });
 
-      if (staticStyleProps.length > 0) {
+      if (staticStyleProps.length > 0 || mediaQueries.length > 0) {
         const className = `tela-${componentName}-${element.tagName}-${this.uniqueIdCounter++}`;
-        const cssBody = staticStyleProps.join('; ');
-        this.cssRules.push(`.${className} { ${cssBody} }`);
+        if (staticStyleProps.length > 0) {
+          this.cssRules.push(`.${className} { ${staticStyleProps.join('; ')} }`);
+        }
+        mediaQueries.forEach(mq => {
+          const mqProps = mq.properties
+            .filter(p => p.value.type === ASTType.LITERAL)
+            .map(p => `${p.name}: ${p.value.value}`)
+            .join('; ');
+          if (mqProps) {
+            this.cssRules.push(`@media ${mq.query} { .${className} { ${mqProps} } }`);
+          }
+        });
         attrsObj['class'] = `"${className}"`;
       }
 

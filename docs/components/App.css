@@ -4,8 +4,14 @@
 .tela-App-span-3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px }
 .tela-App-span-4 { background: rgba(255,255,255,0.2); font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600 }
 .tela-App-div-5 { display: flex; gap: 16px; align-items: center }
+@media (max-width: 768px) { .tela-App-div-5 { display: none } }
 .tela-App-a-6 { color: rgba(255,255,255,0.85); font-size: 14px; text-decoration: none }
 .tela-App-a-7 { color: rgba(255,255,255,0.85); font-size: 14px; text-decoration: none }
 .tela-App-button-8 { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 14px }
-.tela-App-div-9 { display: flex; max-width: 1200px; margin: 0 auto; width: 100% }
-.tela-App-div-10 { flex: 1; padding: 40px 48px; min-width: 0; max-width: 760px }
+.tela-App-button-9 { display: none; background: rgba(255,255,255,0.15); border: none; border-radius: 6px; cursor: pointer; padding: 8px 12px; color: white; font-size: 20px; line-height: 1 }
+@media (max-width: 768px) { .tela-App-button-9 { display: block } }
+.tela-App-div-10 { display: flex; max-width: 1200px; margin: 0 auto; width: 100% }
+@media (max-width: 768px) { .tela-App-div-10 { display: block } }
+.tela-App-div-11 { position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 150 }
+.tela-App-div-12 { flex: 1; padding: 40px 48px; min-width: 0; max-width: 760px }
+@media (max-width: 768px) { .tela-App-div-12 { padding: 24px 20px; max-width: 100% } }

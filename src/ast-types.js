@@ -43,6 +43,9 @@ const ASTType = {
   COMPUTED_PROP: 'ComputedProperty',
   WATCHER: 'Watcher',
   IMPORT_DECL: 'ImportDeclaration',
+
+  // Responsive styles
+  MEDIA_QUERY: 'MediaQuery',
 };
 
 module.exports = {

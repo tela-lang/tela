@@ -1,7 +1,15 @@
 component App {
   state page: String = "introduction"
+  state sidebarOpen: Boolean = false
 
-  function nav(p) { page = p }
+  function nav(p) {
+    page = p
+    sidebarOpen = false
+  }
+
+  function toggleSidebar() {
+    sidebarOpen = !sidebarOpen
+  }
 
   view {
     div {
@@ -18,7 +26,7 @@ component App {
           height: "60px"
           position: "sticky"
           top: 0
-          z-index: "100"
+          z-index: 100
           box-shadow: "0 2px 8px rgba(0,0,0,0.15)"
         }
         div {
@@ -38,8 +46,16 @@ component App {
             content: "v0.1 alpha"
           }
         }
+
         div {
-          style { display: "flex" gap: "16px" align-items: "center" }
+          style {
+            display: "flex"
+            gap: "16px"
+            align-items: "center"
+            @media (max-width: 768px) {
+              display: "none"
+            }
+          }
           a {
             href: "https://github.com/tela-lang/tela"
             style { color: "rgba(255,255,255,0.85)" font-size: "14px" text-decoration: "none" }
@@ -56,16 +72,68 @@ component App {
             content: "Docs"
           }
         }
+
+        button {
+          @click: toggleSidebar
+          style {
+            display: "none"
+            background: "rgba(255,255,255,0.15)"
+            border: "none"
+            border-radius: "6px"
+            cursor: "pointer"
+            padding: "8px 12px"
+            color: "white"
+            font-size: "20px"
+            line-height: "1"
+            @media (max-width: 768px) {
+              display: "block"
+            }
+          }
+          content: sidebarOpen ? "✕" : "☰"
+        }
       }
 
       if (page === "hero") {
         Hero { onStart: nav }
       } else {
         div {
-          style { display: "flex" max-width: "1200px" margin: "0 auto" width: "100%" }
-          Sidebar { activePage: page onNav: nav }
+          style {
+            display: "flex"
+            max-width: "1200px"
+            margin: "0 auto"
+            width: "100%"
+            @media (max-width: 768px) {
+              display: "block"
+            }
+          }
+
           div {
-            style { flex: 1 padding: "40px 48px" min-width: 0 max-width: "760px" }
+            style {
+              display: sidebarOpen ? "block" : "none"
+              position: "fixed"
+              top: "60px"
+              left: 0
+              right: 0
+              bottom: 0
+              background: "rgba(0,0,0,0.4)"
+              z-index: 150
+            }
+            @click: toggleSidebar
+          }
+
+          Sidebar { activePage: page onNav: nav isOpen: sidebarOpen }
+
+          div {
+            style {
+              flex: 1
+              padding: "40px 48px"
+              min-width: 0
+              max-width: "760px"
+              @media (max-width: 768px) {
+                padding: "24px 20px"
+                max-width: "100%"
+              }
+            }
             if (page === "introduction") {
               Introduction {}
             } else if (page === "getting-started") {

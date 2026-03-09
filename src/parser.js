@@ -470,32 +470,12 @@ class Parser {
     const properties = [];
 
     while (!this.check(TokenType.PUNCTUATION, '}')) {
-      const name = this.consume(TokenType.IDENTIFIER, 'Expected style property').value;
-      this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
-
-      let valueExpr;
       const token = this.peek();
-
-      if (token.type === TokenType.NUMBER) {
-        const numToken = this.advance();
-        let valStr = String(numToken.value);
-        const CSS_UNITS = new Set([
-          'px', 'em', 'rem', 'vh', 'vw', 'pt', 'pc', 'cm', 'mm',
-          'ex', 'ch', 'fr', 'deg', 'rad', 's', 'ms', 'vmin', 'vmax'
-        ]);
-        if (this.peek().type === TokenType.IDENTIFIER && CSS_UNITS.has(this.peek().value)) {
-          valStr += this.advance().value;
-        }
-        valueExpr = { type: ASTType.LITERAL, value: valStr };
+      if (token.type === TokenType.IDENTIFIER && token.value === '@media') {
+        properties.push(this.parseMediaQuery());
       } else {
-        valueExpr = this.parseExpression();
+        properties.push(this._parseStyleProperty());
       }
-
-      properties.push({
-        type: ASTType.STYLE_PROPERTY,
-        name,
-        value: valueExpr
-      });
     }
 
     this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
@@ -504,6 +484,79 @@ class Parser {
       type: ASTType.STYLE_BLOCK,
       properties
     };
+  }
+
+  _parseStyleProperty() {
+    const CSS_UNITS = new Set([
+      'px', 'em', 'rem', 'vh', 'vw', 'pt', 'pc', 'cm', 'mm',
+      'ex', 'ch', 'fr', 'deg', 'rad', 's', 'ms', 'vmin', 'vmax'
+    ]);
+
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected style property').value;
+    this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+
+    let valueExpr;
+    const token = this.peek();
+
+    if (token.type === TokenType.NUMBER) {
+      const numToken = this.advance();
+      let valStr = String(numToken.value);
+      if (this.peek().type === TokenType.IDENTIFIER && CSS_UNITS.has(this.peek().value)) {
+        valStr += this.advance().value;
+      }
+      valueExpr = { type: ASTType.LITERAL, value: valStr };
+    } else {
+      valueExpr = this.parseExpression();
+    }
+
+    return { type: ASTType.STYLE_PROPERTY, name, value: valueExpr };
+  }
+
+  parseMediaQuery() {
+    this.consume(TokenType.IDENTIFIER, "Expected '@media'", '@media');
+    this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+
+    // Collect tokens inside the parentheses to reconstruct the query string
+    const parts = [];
+    while (!this.check(TokenType.PUNCTUATION, ')')) {
+      parts.push(this.advance());
+    }
+    this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+
+    const query = `(${this._reconstructMediaQuery(parts)})`;
+
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const properties = [];
+    while (!this.check(TokenType.PUNCTUATION, '}')) {
+      properties.push(this._parseStyleProperty());
+    }
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+
+    return { type: ASTType.MEDIA_QUERY, query, properties };
+  }
+
+  _reconstructMediaQuery(parts) {
+    let result = '';
+    for (let i = 0; i < parts.length; i++) {
+      const tok = parts[i];
+      const prev = i > 0 ? parts[i - 1] : null;
+
+      if (i === 0) {
+        result += String(tok.value);
+      } else if (tok.value === ':') {
+        // No space before colon: max-width: → max-width:
+        result += ':';
+      } else if (prev && prev.value === ':') {
+        // Space after colon: :768 → : 768
+        result += ' ' + String(tok.value);
+      } else if (prev && prev.type === TokenType.NUMBER) {
+        // Unit glued to number: 768 px → 768px
+        result += String(tok.value);
+      } else {
+        result += ' ' + String(tok.value);
+      }
+    }
+    return result;
   }
 
   parseBind() {

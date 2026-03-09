@@ -1,6 +1,7 @@
 component Sidebar {
   prop activePage: String
   prop onNav: Function
+  prop isOpen: Boolean
 
   view {
     nav {
@@ -14,6 +15,16 @@ component Sidebar {
         top: "60px"
         height: "calc(100vh - 60px)"
         overflow-y: "auto"
+        transform: isOpen ? "translateX(0)" : ""
+        @media (max-width: 768px) {
+          position: "fixed"
+          top: "60px"
+          height: "calc(100vh - 60px)"
+          z-index: 200
+          transform: "translateX(-100%)"
+          transition: "transform 0.25s ease"
+          box-shadow: "4px 0 24px rgba(0,0,0,0.18)"
+        }
       }
 
       div {
