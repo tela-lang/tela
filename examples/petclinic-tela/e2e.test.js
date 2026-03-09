@@ -206,6 +206,34 @@ async function run(name, fn) {
     assert.ok(heading.includes('PetClinic'), 'should show hero heading');
   });
 
+  await run('Home page tile — Owners card navigates to /owners', async () => {
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.click('h3:has-text("Owners")');
+    await page.waitForFunction(() => window.location.pathname === '/owners');
+    await page.waitForSelector('table', { timeout: 5000 });
+  });
+
+  await run('Home page tile — Pets card navigates to /pets', async () => {
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.click('h3:has-text("Pets")');
+    await page.waitForFunction(() => window.location.pathname === '/pets');
+    await page.waitForSelector('table', { timeout: 5000 });
+  });
+
+  await run('Home page tile — Vets card navigates to /vets', async () => {
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.click('h3:has-text("Vets")');
+    await page.waitForFunction(() => window.location.pathname === '/vets');
+    await page.waitForSelector('h3:has-text("Dr.")', { timeout: 5000 });
+  });
+
+  await run('Home page tile — Visits card navigates to /visits', async () => {
+    await page.goto(BASE, { waitUntil: 'networkidle' });
+    await page.click('h3:has-text("Visits")');
+    await page.waitForFunction(() => window.location.pathname === '/visits');
+    await page.waitForSelector('table', { timeout: 5000 });
+  });
+
   await run('Deep-link to /owners loads directly (SPA fallback)', async () => {
     await page.goto(`${BASE}/owners`, { waitUntil: 'networkidle' });
     assert.strictEqual(new URL(page.url()).pathname, '/owners');
