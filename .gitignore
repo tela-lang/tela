@@ -15,3 +15,5 @@ examples/petclinic-tela/target/
 # Compiled example assets can be regenerated
 examples/**/*.js
 examples/**/*.css
+# But keep test files
+!examples/**/*.test.js

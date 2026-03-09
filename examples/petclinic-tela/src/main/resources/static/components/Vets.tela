@@ -132,7 +132,7 @@ component Vets {
                   h3 { style { margin: "0 0 4px" color: "#2c3e50" } content: "Dr. ${v.firstName} ${v.lastName}" }
                   p {
                     style { margin: 0 color: "#888" font-size: "13px" }
-                    content: "${v.specialties ?? 'General Practice'}"
+                    content: "${v.specialties || 'General Practice'}"
                   }
                 }
                 button {
