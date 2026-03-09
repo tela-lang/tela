@@ -4,7 +4,7 @@
   "description": "A declarative UI language that compiles to plain JS + CSS. Reactive components, scoped styles, zero runtime overhead.",
   "main": "src/index.js",
   "bin": {
-    "tela": "./bin/tela.js"
+    "tela": "bin/tela.js"
   },
   "files": [
     "bin/",
@@ -29,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/tela-lang/tela.git"
+    "url": "git+https://github.com/tela-lang/tela.git"
   },
   "homepage": "https://tela-lang.github.io/tela",
   "license": "MIT",
