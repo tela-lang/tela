@@ -308,7 +308,12 @@ class Parser {
 
     if (token.type === TokenType.KEYWORD && token.value === 'return') {
       this.advance();
-      const value = this.parseExpression();
+      // Bare `return` — no expression follows (next token closes a block)
+      const next = this.peek();
+      const hasValue = !(
+        next.type === TokenType.PUNCTUATION && (next.value === '}' || next.value === ')' || next.value === ']')
+      );
+      const value = hasValue ? this.parseExpression() : { type: ASTType.LITERAL, value: null };
       return { type: ASTType.RETURN_STMT, value };
     }
 

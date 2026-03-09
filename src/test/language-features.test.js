@@ -308,4 +308,22 @@ test('C-style for loop compiles correctly', () => {
   assert.ok(js.includes('for (let i = 0; (i < 5); i ='), 'should compile C-style for');
 });
 
+// ─── bare return (no value) ──────────────────────────────────────────────────
+
+test('bare return compiles to return null', () => {
+  const source = `
+    component BareReturn {
+      function guard() {
+        if (true) {
+          return
+        }
+        doSomething()
+      }
+      view { div {} }
+    }
+  `;
+  const js = compileOk(source);
+  assert.ok(js.includes('return null;'), 'bare return should compile to return null');
+});
+
 console.log('Language Feature Tests Passed!');

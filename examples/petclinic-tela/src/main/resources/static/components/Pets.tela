@@ -1,6 +1,11 @@
+enum PetType { DOG CAT BIRD RABBIT FISH OTHER }
+
+model Pet { name: String birthDate: String type: String ownerId: String }
+
 component Pets {
   state pets: Array = []
   state loading: Boolean = true
+  state error: String = ""
   state showForm: Boolean = false
   state newName: String = ""
   state newBirthDate: String = ""
@@ -13,26 +18,41 @@ component Pets {
 
   async function loadPets() {
     loading = true
-    response = await fetch("/api/pets")
-    pets = await response.json()
-    loading = false
+    error = ""
+    try {
+      response = await fetch("/api/pets")
+      pets = await response.json()
+    } catch (e) {
+      error = "Failed to load pets. Please try again."
+    } finally {
+      loading = false
+    }
   }
 
   async function addPet() {
-    response = await fetch("/api/pets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: newName, birthDate: newBirthDate, type: newType, ownerId: newOwnerId }) })
-    newPet = await response.json()
-    pets = pets.concat([newPet])
-    newName = ""
-    newBirthDate = ""
-    newType = ""
-    newOwnerId = ""
-    showForm = false
+    try {
+      newPetData = Pet({ name: newName, birthDate: newBirthDate, type: newType, ownerId: newOwnerId })
+      response = await fetch("/api/pets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(newPetData) })
+      newPet = await response.json()
+      pets = pets.concat([newPet])
+      newName = ""
+      newBirthDate = ""
+      newType = ""
+      newOwnerId = ""
+      showForm = false
+    } catch (e) {
+      error = "Failed to save pet. Please try again."
+    }
   }
 
   async function deletePet(id) {
-    await fetch("/api/pets/" + id, { method: "DELETE" })
-    response = await fetch("/api/pets")
-    pets = await response.json()
+    try {
+      await fetch("/api/pets/" + id, { method: "DELETE" })
+      response = await fetch("/api/pets")
+      pets = await response.json()
+    } catch (e) {
+      error = "Failed to delete pet."
+    }
   }
 
   function toggleForm() {
@@ -45,29 +65,22 @@ component Pets {
         style { display: "flex" justify-content: "space-between" align-items: "center" margin-bottom: "24px" }
         h2 { style { margin: 0 color: "#2c3e50" } content: "Pets" }
         button {
-          style {
-            background: "#34786e"
-            color: "white"
-            border: "none"
-            padding: "10px 20px"
-            border-radius: "6px"
-            cursor: "pointer"
-            font-size: "14px"
-          }
+          style { background: "#34786e" color: "white" border: "none" padding: "10px 20px" border-radius: "6px" cursor: "pointer" font-size: "14px" }
           content: "Add Pet"
           @click: toggleForm
         }
       }
 
+      if (error !== "") {
+        div {
+          style { background: "#fff3f3" border: "1px solid #ffcdd2" border-radius: "6px" padding: "12px 16px" margin-bottom: "16px" color: "#c62828" font-size: "14px" }
+          content: "${error}"
+        }
+      }
+
       if (showForm) {
         div {
-          style {
-            background: "white"
-            border: "1px solid #e0e0e0"
-            border-radius: "8px"
-            padding: "24px"
-            margin-bottom: "24px"
-          }
+          style { background: "white" border: "1px solid #e0e0e0" border-radius: "8px" padding: "24px" margin-bottom: "24px" }
           h3 { style { margin: "0 0 16px" color: "#34786e" } content: "New Pet" }
           div {
             style { display: "grid" grid-template-columns: "1fr 1fr" gap: "12px" }
@@ -78,7 +91,7 @@ component Pets {
             }
             input {
               bind value: newType
-              placeholder: "Type (cat, dog, bird…)"
+              placeholder: "Type (dog, cat, bird…)"
               style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
             }
             input {
@@ -132,12 +145,20 @@ component Pets {
                   td { style { padding: "12px 16px" font-weight: "500" } content: "${p.name}" }
                   td {
                     style { padding: "12px 16px" }
-                    span {
-                      style { background: "#e8f5e9" color: "#2e7d32" padding: "2px 10px" border-radius: "12px" font-size: "13px" }
-                      content: "${p.type}"
+                    switch (p.type) {
+                      case "dog":
+                        span { style { background: "#e3f2fd" color: "#1565c0" padding: "2px 10px" border-radius: "12px" font-size: "13px" } content: "🐕 dog" }
+                      case "cat":
+                        span { style { background: "#fce4ec" color: "#880e4f" padding: "2px 10px" border-radius: "12px" font-size: "13px" } content: "🐈 cat" }
+                      case "bird":
+                        span { style { background: "#fff8e1" color: "#f57f17" padding: "2px 10px" border-radius: "12px" font-size: "13px" } content: "🐦 bird" }
+                      case "rabbit":
+                        span { style { background: "#f3e5f5" color: "#6a1b9a" padding: "2px 10px" border-radius: "12px" font-size: "13px" } content: "🐇 rabbit" }
+                      default:
+                        span { style { background: "#e8f5e9" color: "#2e7d32" padding: "2px 10px" border-radius: "12px" font-size: "13px" } content: "${p.type}" }
                     }
                   }
-                  td { style { padding: "12px 16px" color: "#666" } content: "${p.birthDate}" }
+                  td { style { padding: "12px 16px" color: "#666" } content: "${p.birthDate ?? 'Unknown'}" }
                   td { style { padding: "12px 16px" color: "#888" } content: "#${p.ownerId}" }
                   td {
                     style { padding: "12px 16px" }
