@@ -56,9 +56,9 @@
             <phase>generate-resources</phase>
             <goals><goal>exec</goal></goals>
             <configuration>
-              <executable>npx</executable>
+              <executable>node</executable>
               <arguments>
-                <argument>tela</argument>
+                <argument>${project.basedir}/../../bin/tela.js</argument>
                 <argument>compile-all</argument>
                 <argument>${project.basedir}/src/main/resources/static/components</argument>
                 <argument>--global</argument>
