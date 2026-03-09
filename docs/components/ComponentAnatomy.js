@@ -12,6 +12,8 @@ const ComponentAnatomy = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_ComponentAnatomy.anatomyCode = window.TELA_DOCS.anatomyCode;
 

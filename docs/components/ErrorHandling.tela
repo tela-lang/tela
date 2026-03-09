@@ -1,0 +1,99 @@
+component ErrorHandling {
+  state tryCatchCode: String = ""
+  state throwCode: String = ""
+
+  onMount {
+    tryCatchCode = window.TELA_DOCS.tryCatchCode
+    throwCode = window.TELA_DOCS.throwCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Error Handling"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela supports try / catch / finally and throw — the same error-handling constructs you know from Java and JavaScript."
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "try / catch / finally"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Wrap async API calls in try/catch to handle network errors gracefully. The finally block always runs, making it perfect for clearing a loading flag."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${tryCatchCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "throw"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Use throw to signal validation failures or other unrecoverable conditions. You can throw a string, an Error object, or any value."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${throwCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Best Practices"
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "12px" }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Always use finally to clear loading flags"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Put loading = false in finally so the spinner disappears even when the request fails."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Store errors in state"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Declare state error: String = \"\" and display it with if (error !== \"\") so users see a friendly message instead of a blank screen."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Reset error before each request"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Set error = \"\" at the top of your async function so stale error messages from previous calls don't linger."
+          }
+        }
+      }
+    }
+  }
+}

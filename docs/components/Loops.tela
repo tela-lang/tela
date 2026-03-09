@@ -1,0 +1,102 @@
+component Loops {
+  state whileCode: String = ""
+  state breakContinueCode: String = ""
+  state forInCode: String = ""
+  state classicForCode: String = ""
+
+  onMount {
+    whileCode = window.TELA_DOCS.whileCode
+    breakContinueCode = window.TELA_DOCS.breakContinueCode
+    forInCode = window.TELA_DOCS.forInCode
+    classicForCode = window.TELA_DOCS.classicForCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Loops"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela has three looping constructs in function bodies: while, for-in (range over array), and C-style for. In the view, use for-in to render a list of elements."
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "while"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${whileCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "break and continue"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "break exits the nearest loop. continue skips the rest of the current iteration."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${breakContinueCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "for-in (function body)"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Range over an array in function logic — great for aggregations."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${forInCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "C-style for"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "When you need an index counter, use the classic three-part for loop."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${classicForCode}" }
+        }
+      }
+
+      div {
+        style { background: "#f0fdf4" border: "1px solid #bbf7d0" border-radius: "8px" padding: "16px 20px" }
+        div {
+          style { font-weight: "700" color: "#166534" margin-bottom: "4px" font-size: "14px" }
+          content: "for-in in the view"
+        }
+        div {
+          style { color: "#15803d" font-size: "14px" line-height: "1.6" }
+          content: "To render a list of elements in the view, use for (item in array) { element { ... } }. See the Control Flow page for view-specific examples."
+        }
+      }
+    }
+  }
+}

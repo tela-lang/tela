@@ -12,6 +12,8 @@ const Lifecycle = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_Lifecycle.lifecycleCode = window.TELA_DOCS.lifecycleCode;
 

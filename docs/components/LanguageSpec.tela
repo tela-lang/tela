@@ -1,0 +1,214 @@
+component LanguageSpec {
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Language Specification"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "32px" }
+        content: "Tela v0.1 — full formal specification covering lexical grammar, expressions, statements, view syntax, routing, and the compilation model."
+      }
+
+      // Lexical Grammar
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "0 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "1. Lexical Grammar" }
+
+      h3 { style { font-size: "18px" font-weight: "700" color: "#374151" margin: "20px 0 8px" } content: "Keywords" }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "16px 24px" margin: "0 0 16px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "13px" color: "#e2e8f0" white-space: "pre" }
+          code { content: "component  prop    state   route\nfunction   async   return  await\nif         else    for     in\nwhile      break   continue\nswitch     case    default\ntry        catch   finally throw\nenum       model\nonMount    onUpdate  onDestroy\nview       style   bind    class" }
+        }
+      }
+
+      h3 { style { font-size: "18px" font-weight: "700" color: "#374151" margin: "20px 0 8px" } content: "Literals" }
+      div {
+        style { display: "grid" grid-template-columns: "1fr 2fr" gap: "0" border: "1px solid #e5e7eb" border-radius: "8px" overflow: "hidden" font-size: "14px" }
+        div { style { background: "#f9fafb" padding: "8px 16px" font-weight: "700" color: "#374151" border-bottom: "1px solid #e5e7eb" } content: "Kind" }
+        div { style { background: "#f9fafb" padding: "8px 16px" font-weight: "700" color: "#374151" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "Examples" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" } content: "Number" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "0  42  3.14  -1" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" } content: "String" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "\"hello\"  \"24px\"  \"#fff\"" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" } content: "Boolean" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "true  false" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" } content: "Null" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "null" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" } content: "Array" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "[]  [1, 2, 3]" }
+        div { style { padding: "8px 16px" } content: "Object" }
+        div { style { padding: "8px 16px" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "{}  { key: value }" }
+      }
+
+      // Expressions
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "40px 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "2. Expression Precedence" }
+      div {
+        style { display: "grid" grid-template-columns: "60px 1fr 120px" gap: "0" border: "1px solid #e5e7eb" border-radius: "8px" overflow: "hidden" font-size: "14px" }
+        div { style { background: "#f9fafb" padding: "8px 16px" font-weight: "700" color: "#374151" border-bottom: "1px solid #e5e7eb" } content: "Level" }
+        div { style { background: "#f9fafb" padding: "8px 16px" font-weight: "700" color: "#374151" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "Operators / Forms" }
+        div { style { background: "#f9fafb" padding: "8px 16px" font-weight: "700" color: "#374151" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "Assoc." }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "12" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "literals  identifiers  (expr)  [arr]  {obj}" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "—" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "11" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "a.b  a[b]  a?.b  f()  a?.m()" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "10" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "!  - (unary)" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "right" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "9" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "*  /  %" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "8" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "+  -" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "7" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "<  >  <=  >=" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "6" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "==  !=" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "5" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "&&" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "4" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "||" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "left" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" text-align: "center" font-weight: "600" } content: "3" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "cond ? then : else" }
+        div { style { padding: "8px 16px" border-bottom: "1px solid #e5e7eb" border-left: "1px solid #e5e7eb" } content: "right" }
+        div { style { padding: "8px 16px" text-align: "center" font-weight: "600" } content: "1" }
+        div { style { padding: "8px 16px" border-left: "1px solid #e5e7eb" font-family: "monospace" } content: "?? (null coalescing)" }
+        div { style { padding: "8px 16px" border-left: "1px solid #e5e7eb" } content: "left" }
+      }
+
+      // Statements
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "40px 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "3. Statements" }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "8px" }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Assignment" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "x = expr" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Return" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "return expr  |  return" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "If / else if" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "if (c) { } else if (c) { } else { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Switch" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "switch (e) { case v: stmt  default: stmt }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "While" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "while (c) { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "For-in" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "for (item in arr) { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "For (C-style)" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "for (i = 0; i < n; i = i + 1) { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Break / Continue" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "break  |  continue" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Try/Catch" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "try { } catch (e) { } finally { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Throw" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "throw expr" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "140px" } content: "Await" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "x = await expr  (inside async function)" }
+        }
+      }
+
+      // Component structure
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "40px 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "4. Component Members" }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "8px" }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "Route" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "route varName: Type" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "State" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "state varName: Type = expr" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "Prop" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "prop varName: Type" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "Function" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "[async] function name(p1, p2) { }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "onMount" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "onMount { stmts }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "onUpdate" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "onUpdate { stmts }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "onDestroy" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "onDestroy { stmts }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "180px" } content: "View" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "view { element }" }
+        }
+      }
+
+      // Compilation
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "40px 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "5. Compilation Model" }
+      p {
+        style { font-size: "15px" color: "#4b5563" line-height: "1.8" margin-bottom: "12px" }
+        content: "The Tela compiler is a single-pass pipeline: Tokenizer → Parser (recursive descent + Pratt) → Compiler → JS + CSS."
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "8px" margin-bottom: "24px" }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" }
+          div { style { font-weight: "700" color: "#374151" margin-bottom: "4px" } content: "Reactivity" }
+          div { style { color: "#6b7280" } content: "State is wrapped in a Proxy. Any write triggers instance.update() which re-runs render() and reconciles the DOM." }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" }
+          div { style { font-weight: "700" color: "#374151" margin-bottom: "4px" } content: "CSS scoping" }
+          div { style { color: "#6b7280" } content: "Each element with a style block gets a unique class name of the form ComponentName-hash-index. Literal values go into the CSS file; reactive values become inline styles." }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" }
+          div { style { font-weight: "700" color: "#374151" margin-bottom: "4px" } content: "Output" }
+          div { style { color: "#6b7280" } content: "Each .tela file produces one .js file (component factory exposed on window) and one .css file." }
+        }
+      }
+
+      div {
+        style { background: "#f8fafb" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" text-align: "center" }
+        p {
+          style { color: "#6b7280" font-size: "14px" margin: 0 }
+          content: "For the full specification with complete grammar rules and examples, see SPEC.md in the Tela repository."
+        }
+        a {
+          href: "https://github.com/tela-lang/tela/blob/main/SPEC.md"
+          style { color: "#34786e" font-size: "14px" font-weight: "600" }
+          content: "View SPEC.md on GitHub →"
+        }
+      }
+    }
+  }
+}

@@ -343,6 +343,216 @@ view {
   }
 }`,
 
+  // Error Handling
+  tryCatchCode: `async function loadData() {
+  loading = true
+  error = ""
+  try {
+    response = await fetch("/api/data")
+    data = await response.json()
+  } catch (e) {
+    error = "Failed to load data: " + e.message
+  } finally {
+    loading = false
+  }
+}`,
+
+  throwCode: `function validateAge(age) {
+  if (age < 0) {
+    throw "Age cannot be negative"
+  }
+  if (age > 150) {
+    throw new Error("Age is unrealistically large")
+  }
+  return age
+}
+
+async function submit() {
+  try {
+    age = validateAge(inputAge)
+    response = await fetch("/api/profile", {
+      method: "POST",
+      body: JSON.stringify({ age: age })
+    })
+  } catch (e) {
+    errorMsg = e.message || e
+  }
+}`,
+
+  // Switch / Case
+  switchFunctionCode: `function getStatusColor(status) {
+  switch (status) {
+    case "active":   return "#22c55e"
+    case "pending":  return "#f59e0b"
+    case "inactive": return "#ef4444"
+    default:         return "#6b7280"
+  }
+}`,
+
+  switchViewCode: `enum PetType { DOG CAT BIRD RABBIT OTHER }
+
+component PetBadge {
+  prop type: String
+
+  view {
+    switch (type) {
+      case PetType.DOG:
+        span { style { background: "#fbbf24" } content: "🐕 Dog" }
+      case PetType.CAT:
+        span { style { background: "#a78bfa" } content: "🐈 Cat" }
+      case PetType.BIRD:
+        span { style { background: "#34d399" } content: "🦜 Bird" }
+      default:
+        span { style { background: "#9ca3af" } content: "${type}" }
+    }
+  }
+}`,
+
+  // Enums & Models
+  enumCode: `enum Status {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+component Post {
+  state status: String = Status.DRAFT
+
+  function publish() {
+    status = Status.PUBLISHED
+  }
+
+  view {
+    div {
+      p { content: "Status: \${status}" }
+      if (status === Status.DRAFT) {
+        button { content: "Publish" @click: publish }
+      }
+    }
+  }
+}`,
+
+  modelCode: `model User {
+  firstName: String
+  lastName:  String
+  email:     String
+  role:      String
+}
+
+async function createUser() {
+  newUser = User({
+    firstName: firstName,
+    lastName:  lastName,
+    email:     email,
+    role:      "viewer"
+  })
+  response = await fetch("/api/users", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(newUser)
+  })
+  result = await response.json()
+  users = users.concat([result])
+}`,
+
+  // Null Safety
+  optionalChainCode: `// Without optional chaining — crashes if user is null
+name = user.profile.name
+
+// With optional chaining — returns undefined safely
+name = user?.profile?.name
+
+// Works with method calls too
+label = item?.getLabel?.()
+
+// Works with array indexing
+first = list?.[0]`,
+
+  nullCoalesceCode: `// ?? only fires for null / undefined
+display = user.nickname ?? "Anonymous"
+
+// Use || to also handle empty string
+label = tag.name || "Unnamed"
+
+// Chaining
+city = user?.address?.city ?? "Unknown city"`,
+
+  // Loops
+  whileCode: `function countDown() {
+  n = 10
+  while (n > 0) {
+    console.log(n)
+    n = n - 1
+  }
+}`,
+
+  breakContinueCode: `function findFirst(items, target) {
+  result = null
+  for (item in items) {
+    if (item.deleted) { continue }
+    if (item.id === target) {
+      result = item
+      break
+    }
+  }
+  return result
+}`,
+
+  forInCode: `function sumPrices(cart) {
+  total = 0
+  for (item in cart) {
+    total = total + item.price
+  }
+  return total
+}`,
+
+  classicForCode: `function buildGrid(size) {
+  cells = []
+  for (i = 0; i < size; i = i + 1) {
+    for (j = 0; j < size; j = j + 1) {
+      cells = cells.concat([{ row: i, col: j }])
+    }
+  }
+  return cells
+}`,
+
+  // Routing
+  routingCode: `component App {
+  route path: String
+
+  view {
+    div {
+      nav {
+        button { content: "Home"   @click: navigate("/") }
+        button { content: "About"  @click: navigate("/about") }
+        button { content: "Blog"   @click: navigate("/blog") }
+      }
+
+      switch (path) {
+        case "/about":  About {}
+        case "/blog":   Blog {}
+        default:        Home {}
+      }
+    }
+  }
+}`,
+
+  routingCustomNavigateCode: `component App {
+  route path: String
+
+  // Custom navigate — compiler won't inject its own
+  function navigate(dest) {
+    window.history.pushState(null, "", dest)
+    path = dest
+  }
+
+  view {
+    div {
+      button { content: "Home" @click: navigate("/") }
+    }
+  }
+}`,
+
   // Spring Boot
   mavenCode: `<plugin>
   <groupId>org.codehaus.mojo</groupId>

@@ -1,0 +1,84 @@
+component NullSafety {
+  state optionalChainCode: String = ""
+  state nullCoalesceCode: String = ""
+
+  onMount {
+    optionalChainCode = window.TELA_DOCS.optionalChainCode
+    nullCoalesceCode = window.TELA_DOCS.nullCoalesceCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Null Safety"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela supports optional chaining (?.) and null coalescing (??) to write safe, concise expressions without nested null checks."
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Optional chaining (?.)"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Use ?. to safely access a property or call a method on a value that might be null or undefined. The expression short-circuits and returns undefined instead of throwing."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${optionalChainCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Null coalescing (??)"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "?? returns the right-hand side when the left is null or undefined — but not when it is 0, false, or an empty string. Use || when you also want to handle empty strings."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${nullCoalesceCode}" }
+        }
+      }
+
+      div {
+        style { display: "flex" gap: "16px" }
+        div {
+          style { flex: 1 background: "#f0fdf4" border: "1px solid #bbf7d0" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#166534" margin-bottom: "8px" font-size: "14px" }
+            content: "?? — null/undefined only"
+          }
+          div {
+            style { color: "#15803d" font-size: "13px" line-height: "1.6" }
+            content: "0 ?? 'x'    → 0\nfalse ?? 'x' → false\n\"\" ?? 'x'   → \"\""
+          }
+        }
+        div {
+          style { flex: 1 background: "#fef3c7" border: "1px solid #fde68a" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#92400e" margin-bottom: "8px" font-size: "14px" }
+            content: "|| — any falsy value"
+          }
+          div {
+            style { color: "#b45309" font-size: "13px" line-height: "1.6" }
+            content: "0 || 'x'    → 'x'\nfalse || 'x' → 'x'\n\"\" || 'x'   → 'x'"
+          }
+        }
+      }
+    }
+  }
+}

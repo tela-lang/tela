@@ -66,6 +66,11 @@ component Sidebar {
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Template Syntax"
       }
+      button {
+        @click: onNav("enums-models")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Enums and Models"
+      }
 
       div {
         style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
@@ -82,6 +87,16 @@ component Sidebar {
         content: "Control Flow"
       }
       button {
+        @click: onNav("switch-case")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Switch / Case"
+      }
+      button {
+        @click: onNav("loops")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Loops"
+      }
+      button {
         @click: onNav("two-way-binding")
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Two-way Binding"
@@ -92,9 +107,24 @@ component Sidebar {
         content: "Advanced"
       }
       button {
+        @click: onNav("error-handling")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Error Handling"
+      }
+      button {
         @click: onNav("async-data")
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Async and Data Fetching"
+      }
+      button {
+        @click: onNav("null-safety")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Null Safety"
+      }
+      button {
+        @click: onNav("routing")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Routing"
       }
       button {
         @click: onNav("child-components")
@@ -115,6 +145,16 @@ component Sidebar {
         @click: onNav("spring-boot")
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Spring Boot"
+      }
+
+      div {
+        style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Reference"
+      }
+      button {
+        @click: onNav("language-spec")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Language Specification"
       }
     }
   }

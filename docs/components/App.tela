@@ -134,32 +134,28 @@ component App {
                 max-width: "100%"
               }
             }
-            if (page === "introduction") {
-              Introduction {}
-            } else if (page === "getting-started") {
-              GettingStarted {}
-            } else if (page === "component-anatomy") {
-              ComponentAnatomy {}
-            } else if (page === "reactive-state") {
-              ReactiveState {}
-            } else if (page === "props") {
-              PropsSection {}
-            } else if (page === "template-syntax") {
-              TemplateSyntax {}
-            } else if (page === "events") {
-              EventsSection {}
-            } else if (page === "control-flow") {
-              ControlFlow {}
-            } else if (page === "two-way-binding") {
-              TwoWayBinding {}
-            } else if (page === "async-data") {
-              AsyncData {}
-            } else if (page === "child-components") {
-              ChildComponents {}
-            } else if (page === "lifecycle") {
-              Lifecycle {}
-            } else {
-              SpringBoot {}
+            switch (page) {
+              case "introduction":     Introduction {}
+              case "getting-started":  GettingStarted {}
+              case "component-anatomy": ComponentAnatomy {}
+              case "reactive-state":   ReactiveState {}
+              case "props":            PropsSection {}
+              case "template-syntax":  TemplateSyntax {}
+              case "enums-models":     EnumsModels {}
+              case "events":           EventsSection {}
+              case "control-flow":     ControlFlow {}
+              case "switch-case":      SwitchCase {}
+              case "loops":            Loops {}
+              case "two-way-binding":  TwoWayBinding {}
+              case "error-handling":   ErrorHandling {}
+              case "async-data":       AsyncData {}
+              case "null-safety":      NullSafety {}
+              case "routing":          Routing {}
+              case "child-components": ChildComponents {}
+              case "lifecycle":        Lifecycle {}
+              case "spring-boot":      SpringBoot {}
+              case "language-spec":    LanguageSpec {}
+              default:                 Introduction {}
             }
           }
         }

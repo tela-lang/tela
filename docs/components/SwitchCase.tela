@@ -1,0 +1,70 @@
+component SwitchCase {
+  state switchFunctionCode: String = ""
+  state switchViewCode: String = ""
+
+  onMount {
+    switchFunctionCode = window.TELA_DOCS.switchFunctionCode
+    switchViewCode = window.TELA_DOCS.switchViewCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Switch / Case"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "switch / case works in both function bodies and in the view block. In the view it acts as a conditional router — only the matching branch is rendered."
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "In a function body"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Use switch to map a value to a result without a chain of if/else if. Each case body is a single statement — use a block { } for multiple."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${switchFunctionCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "In the view"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "switch in a view block renders exactly one child element — the first case that matches, or the default if none match. This is the recommended pattern for component routing."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${switchViewCode}" }
+        }
+      }
+
+      div {
+        style { background: "#f0fdf4" border: "1px solid #bbf7d0" border-radius: "8px" padding: "16px 20px" }
+        div {
+          style { font-weight: "700" color: "#166534" margin-bottom: "4px" font-size: "14px" }
+          content: "No fall-through"
+        }
+        div {
+          style { color: "#15803d" font-size: "14px" line-height: "1.6" }
+          content: "Tela switch cases do not fall through. You never need a break statement inside a case."
+        }
+      }
+    }
+  }
+}
