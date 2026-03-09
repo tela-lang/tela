@@ -4,6 +4,7 @@ const { Tokenizer } = require('./tokenizer');
 
 // Operator precedence for infix parsing
 const INFIX_PREC = {
+  '??': 1,
   '||': 2,
   '&&': 3,
   '===': 4, '!==': 4, '==': 4, '!=': 4,
@@ -65,6 +66,8 @@ class Parser {
 
   parseProgram() {
     const imports = [];
+    const enums = [];
+    const models = [];
     const components = [];
 
     while (!this.isAtEnd()) {
@@ -73,11 +76,22 @@ class Parser {
         imports.push(this.parseImport());
       } else if (token.type === TokenType.KEYWORD && token.value === 'export') {
         this.advance(); // consume 'export'
-        const component = this.parseComponent();
-        component.exported = true;
-        components.push(component);
+        const next = this.peek();
+        if (next.type === TokenType.KEYWORD && next.value === 'enum') {
+          const e = this.parseEnum(); e.exported = true; enums.push(e);
+        } else if (next.type === TokenType.KEYWORD && next.value === 'model') {
+          const m = this.parseModel(); m.exported = true; models.push(m);
+        } else {
+          const component = this.parseComponent();
+          component.exported = true;
+          components.push(component);
+        }
       } else if (token.type === TokenType.KEYWORD && token.value === 'component') {
         components.push(this.parseComponent());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'enum') {
+        enums.push(this.parseEnum());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'model') {
+        models.push(this.parseModel());
       } else {
         this.advance(); // skip unknown tokens at top level
       }
@@ -86,6 +100,8 @@ class Parser {
     return {
       type: ASTType.PROGRAM,
       imports,
+      enums,
+      models,
       components
     };
   }
@@ -258,6 +274,38 @@ class Parser {
       return this.parseIfStatement();
     }
 
+    if (token.type === TokenType.KEYWORD && token.value === 'try') {
+      return this.parseTryCatch();
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'throw') {
+      this.advance();
+      const value = this.parseExpression();
+      return { type: ASTType.THROW_STMT, value };
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'switch') {
+      return this.parseSwitchStatement();
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'while') {
+      return this.parseWhileStatement();
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'for') {
+      return this.parseForStatement();
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'break') {
+      this.advance();
+      return { type: ASTType.BREAK_STMT };
+    }
+
+    if (token.type === TokenType.KEYWORD && token.value === 'continue') {
+      this.advance();
+      return { type: ASTType.CONTINUE_STMT };
+    }
+
     if (token.type === TokenType.KEYWORD && token.value === 'return') {
       this.advance();
       const value = this.parseExpression();
@@ -318,6 +366,212 @@ class Parser {
     return { type: ASTType.IF_STMT, condition, consequent, alternate };
   }
 
+  // --- New Statement Parsers ---
+
+  parseTryCatch() {
+    this.consume(TokenType.KEYWORD, "Expected 'try'", 'try');
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const tryBody = this.parseStatements();
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+
+    let catchParam = null;
+    let catchBody = [];
+    let finallyBody = null;
+
+    if (this.check(TokenType.KEYWORD, 'catch')) {
+      this.advance();
+      this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+      catchParam = this.consume(TokenType.IDENTIFIER, 'Expected catch parameter name').value;
+      this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+      this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+      catchBody = this.parseStatements();
+      this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    }
+
+    if (this.check(TokenType.KEYWORD, 'finally')) {
+      this.advance();
+      this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+      finallyBody = this.parseStatements();
+      this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    }
+
+    return { type: ASTType.TRY_STMT, tryBody, catchParam, catchBody, finallyBody };
+  }
+
+  parseSwitchStatement() {
+    this.consume(TokenType.KEYWORD, "Expected 'switch'", 'switch');
+    this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+    const discriminant = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+
+    const cases = [];
+    while (!this.check(TokenType.PUNCTUATION, '}') && !this.isAtEnd()) {
+      if (this.check(TokenType.KEYWORD, 'case')) {
+        this.advance();
+        const test = this.parseExpression();
+        this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+        const body = this._parseSwitchCaseBody();
+        cases.push({ test, body });
+      } else if (this.check(TokenType.KEYWORD, 'default')) {
+        this.advance();
+        this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+        const body = this._parseSwitchCaseBody();
+        cases.push({ test: null, body });
+      } else {
+        throw new Error(`Expected 'case' or 'default' in switch, got '${this.peek().value}' at line ${this.peek().line}`);
+      }
+    }
+
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.SWITCH_STMT, discriminant, cases };
+  }
+
+  _parseSwitchCaseBody() {
+    const stmts = [];
+    while (
+      !this.check(TokenType.PUNCTUATION, '}') &&
+      !this.check(TokenType.KEYWORD, 'case') &&
+      !this.check(TokenType.KEYWORD, 'default') &&
+      !this.isAtEnd()
+    ) {
+      stmts.push(this.parseStatement());
+    }
+    return stmts;
+  }
+
+  parseWhileStatement() {
+    this.consume(TokenType.KEYWORD, "Expected 'while'", 'while');
+    this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+    const condition = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const body = this.parseStatements();
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.WHILE_STMT, condition, body };
+  }
+
+  parseForStatement() {
+    this.consume(TokenType.KEYWORD, "Expected 'for'", 'for');
+    this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+
+    const first = this.peek();
+    const second = this.peekAt(1);
+
+    // for (item in list) — for-in loop
+    if (first.type === TokenType.IDENTIFIER &&
+        second && second.type === TokenType.KEYWORD && second.value === 'in') {
+      const item = this.advance().value;
+      this.advance(); // consume 'in'
+      const listExpr = this.parseExpression();
+      this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+      this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+      const body = this.parseStatements();
+      this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+      return { type: ASTType.FOR_IN_STMT, item, listExpr, body };
+    }
+
+    // for (i = 0; i < n; i = i + 1) — classic C-style loop
+    const initVar = this.consume(TokenType.IDENTIFIER, 'Expected loop variable').value;
+    this.consume(TokenType.OPERATOR, "Expected '='", '=');
+    const initExpr = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ';'", ';');
+    const condition = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ';'", ';');
+    const updateVar = this.consume(TokenType.IDENTIFIER, 'Expected update variable').value;
+    this.consume(TokenType.OPERATOR, "Expected '='", '=');
+    const updateExpr = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const body = this.parseStatements();
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.FOR_CLASSIC, initVar, initExpr, condition, updateVar, updateExpr, body };
+  }
+
+  // --- Top-level Declaration Parsers ---
+
+  parseEnum() {
+    this.consume(TokenType.KEYWORD, "Expected 'enum'", 'enum');
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected enum name').value;
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const values = [];
+    while (!this.check(TokenType.PUNCTUATION, '}') && !this.isAtEnd()) {
+      values.push(this.consume(TokenType.IDENTIFIER, 'Expected enum value').value);
+    }
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.ENUM_DECL, name, values, exported: false };
+  }
+
+  parseModel() {
+    this.consume(TokenType.KEYWORD, "Expected 'model'", 'model');
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected model name').value;
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const fields = [];
+    while (!this.check(TokenType.PUNCTUATION, '}') && !this.isAtEnd()) {
+      const fieldName = this.consume(TokenType.IDENTIFIER, 'Expected field name').value;
+      this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+      const fieldType = this.consume(TokenType.IDENTIFIER, 'Expected field type').value;
+      fields.push({ name: fieldName, type: fieldType });
+    }
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.MODEL_DECL, name, fields, exported: false };
+  }
+
+  // --- View-level switch ---
+
+  parseViewSwitch() {
+    this.consume(TokenType.KEYWORD, "Expected 'switch'", 'switch');
+    this.consume(TokenType.PUNCTUATION, "Expected '('", '(');
+    const discriminant = this.parseExpression();
+    this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+
+    const cases = [];
+    while (!this.check(TokenType.PUNCTUATION, '}') && !this.isAtEnd()) {
+      if (this.check(TokenType.KEYWORD, 'case')) {
+        this.advance();
+        const test = this.parseExpression();
+        this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+        const children = this._parseViewSwitchCaseChildren();
+        cases.push({ test, children });
+      } else if (this.check(TokenType.KEYWORD, 'default')) {
+        this.advance();
+        this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+        const children = this._parseViewSwitchCaseChildren();
+        cases.push({ test: null, children });
+      } else {
+        throw new Error(`Expected 'case' or 'default' in switch, got '${this.peek().value}' at line ${this.peek().line}`);
+      }
+    }
+
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.VIEW_SWITCH, discriminant, cases };
+  }
+
+  _parseViewSwitchCaseChildren() {
+    const children = [];
+    while (
+      !this.check(TokenType.PUNCTUATION, '}') &&
+      !this.check(TokenType.KEYWORD, 'case') &&
+      !this.check(TokenType.KEYWORD, 'default') &&
+      !this.isAtEnd()
+    ) {
+      const token = this.peek();
+      if (token.type === TokenType.KEYWORD && token.value === 'if') {
+        children.push(this.parseConditional());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'for') {
+        children.push(this.parseLoop());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'switch') {
+        children.push(this.parseViewSwitch());
+      } else if (token.type === TokenType.IDENTIFIER) {
+        children.push(this.parseElement());
+      } else {
+        throw new Error(`Unexpected token in switch case: '${token.value}' at line ${token.line}`);
+      }
+    }
+    return children;
+  }
+
   // --- View Parsing ---
 
   parseView() {
@@ -356,6 +610,8 @@ class Parser {
         element.children.push(this.parseConditional());
       } else if (token.type === TokenType.KEYWORD && token.value === 'for') {
         element.children.push(this.parseLoop());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'switch') {
+        element.children.push(this.parseViewSwitch());
       } else if (token.type === TokenType.KEYWORD && token.value === 'bind') {
         element.attributes.push(this.parseBind());
       } else if (token.type === TokenType.IDENTIFIER && token.value.startsWith('@')) {
@@ -447,10 +703,12 @@ class Parser {
         children.push(this.parseConditional());
       } else if (token.type === TokenType.KEYWORD && token.value === 'for') {
         children.push(this.parseLoop());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'switch') {
+        children.push(this.parseViewSwitch());
       } else if (token.type === TokenType.IDENTIFIER) {
         children.push(this.parseElement());
       } else {
-        throw new Error(`Unexpected token in block: '${token.value}'. Expected element, if, or for.`);
+        throw new Error(`Unexpected token in block: '${token.value}'. Expected element, if, for, or switch.`);
       }
     }
 
@@ -589,11 +847,27 @@ class Parser {
         break;
       }
 
-      // Member access: expr.prop
+      // Member access: expr.prop (prop may be a keyword token like 'default', 'for', etc.)
       if (token.type === TokenType.PUNCTUATION && token.value === '.' && minPrec < 10) {
         this.advance(); // consume '.'
-        const prop = this.consume(TokenType.IDENTIFIER, 'Expected property name after .').value;
-        left = { type: ASTType.MEMBER_EXPR, object: left, property: prop, computed: false };
+        const propTok = this.peek();
+        if (propTok.type !== TokenType.IDENTIFIER && propTok.type !== TokenType.KEYWORD) {
+          throw new Error(`Expected property name after .. Found ${propTok.type} '${propTok.value}' at line ${propTok.line}, column ${propTok.column}`);
+        }
+        this.advance();
+        left = { type: ASTType.MEMBER_EXPR, object: left, property: propTok.value, computed: false };
+        continue;
+      }
+
+      // Optional chaining: expr?.prop (prop may be a keyword token)
+      if (token.type === TokenType.OPERATOR && token.value === '?.' && minPrec < 10) {
+        this.advance(); // consume '?.'
+        const propTok = this.peek();
+        if (propTok.type !== TokenType.IDENTIFIER && propTok.type !== TokenType.KEYWORD) {
+          throw new Error(`Expected property name after ?.. Found ${propTok.type} '${propTok.value}' at line ${propTok.line}, column ${propTok.column}`);
+        }
+        this.advance();
+        left = { type: ASTType.OPTIONAL_CHAIN, object: left, property: propTok.value };
         continue;
       }
 

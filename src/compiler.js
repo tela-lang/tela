@@ -22,13 +22,29 @@ class Compiler {
       return `import { ${imp.name} } from '${jsPath}';`;
     }).join('\n');
 
+    const enumLines = (ast.enums || []).map(e => this.compileEnum(e)).join('\n');
+    const modelLines = (ast.models || []).map(m => this.compileModel(m)).join('\n');
     const js = ast.components.map(component => this.compileComponent(component)).join('\n\n');
-    const output = importLines ? `${importLines}\n\n${js}` : js;
+
+    const parts = [importLines, enumLines, modelLines, js].filter(Boolean);
+    const output = parts.join('\n\n');
 
     return {
       js: output,
       css: this.cssRules.join('\n')
     };
+  }
+
+  compileEnum(enumDecl) {
+    const entries = enumDecl.values.map(v => `${v}: '${v}'`).join(', ');
+    const decl = `const ${enumDecl.name} = Object.freeze({ ${entries} });`;
+    return enumDecl.exported ? `export ${decl}` : decl;
+  }
+
+  compileModel(modelDecl) {
+    const fields = modelDecl.fields.map(f => `${f.name}: data.${f.name}`).join(', ');
+    const decl = `const ${modelDecl.name} = (data) => ({ ${fields} });`;
+    return modelDecl.exported ? `export ${decl}` : decl;
   }
 
   compileComponent(component) {
@@ -163,11 +179,72 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
       case ASTType.RETURN_STMT:
         return `return ${this.compileExpression(stmt.value, new Set(), componentName)};`;
       case ASTType.EMIT_STMT: {
-        // emit countChange(val) → instance.props.onCountChange?.(compiledVal)
         const propName = 'on' + stmt.eventName.charAt(0).toUpperCase() + stmt.eventName.slice(1);
         const args = stmt.args.map(a => this.compileExpression(a, new Set(), componentName)).join(', ');
         return `instance.props.${propName}?.(${args});`;
       }
+
+      case ASTType.TRY_STMT: {
+        const tryBody = this.compileStatements(stmt.tryBody, componentName, localVars);
+        let out = `try {\n        ${tryBody}\n      }`;
+        if (stmt.catchParam) {
+          const catchLocals = new Set([...localVars, stmt.catchParam]);
+          const catchBody = this.compileStatements(stmt.catchBody, componentName, catchLocals);
+          out += ` catch (${stmt.catchParam}) {\n        ${catchBody}\n      }`;
+        }
+        if (stmt.finallyBody) {
+          const finallyBody = this.compileStatements(stmt.finallyBody, componentName, localVars);
+          out += ` finally {\n        ${finallyBody}\n      }`;
+        }
+        return out;
+      }
+
+      case ASTType.THROW_STMT: {
+        const value = this.compileExpression(stmt.value, localVars, componentName);
+        return `throw ${value};`;
+      }
+
+      case ASTType.SWITCH_STMT: {
+        const disc = this.compileExpression(stmt.discriminant, localVars, componentName);
+        const cases = stmt.cases.map(c => {
+          const body = this.compileStatements(c.body, componentName, new Set([...localVars]));
+          if (c.test === null) {
+            return `default: {\n        ${body}\n        break;\n      }`;
+          }
+          const test = this.compileExpression(c.test, localVars, componentName);
+          return `case ${test}: {\n        ${body}\n        break;\n      }`;
+        }).join('\n      ');
+        return `switch (${disc}) {\n      ${cases}\n    }`;
+      }
+
+      case ASTType.WHILE_STMT: {
+        const cond = this.compileExpression(stmt.condition, localVars, componentName);
+        const body = this.compileStatements(stmt.body, componentName, new Set([...localVars]));
+        return `while (${cond}) {\n        ${body}\n      }`;
+      }
+
+      case ASTType.BREAK_STMT:
+        return 'break;';
+
+      case ASTType.CONTINUE_STMT:
+        return 'continue;';
+
+      case ASTType.FOR_IN_STMT: {
+        const listExpr = this.compileExpression(stmt.listExpr, localVars, componentName);
+        const innerLocals = new Set([...localVars, stmt.item]);
+        const body = this.compileStatements(stmt.body, componentName, innerLocals);
+        return `for (const ${stmt.item} of ${listExpr}) {\n        ${body}\n      }`;
+      }
+
+      case ASTType.FOR_CLASSIC: {
+        const innerLocals = new Set([...localVars, stmt.initVar]);
+        const init = `let ${stmt.initVar} = ${this.compileExpression(stmt.initExpr, localVars, componentName)}`;
+        const cond = this.compileExpression(stmt.condition, innerLocals, componentName);
+        const update = `${stmt.updateVar} = ${this.compileExpression(stmt.updateExpr, innerLocals, componentName)}`;
+        const body = this.compileStatements(stmt.body, componentName, innerLocals);
+        return `for (${init}; ${cond}; ${update}) {\n        ${body}\n      }`;
+      }
+
       default:
         return '';
     }
@@ -272,6 +349,9 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
       }
       if (child.type === ASTType.LOOP) {
         return this.compileLoop(child, locals, componentName);
+      }
+      if (child.type === ASTType.VIEW_SWITCH) {
+        return this.compileViewSwitch(child, locals, componentName);
       }
       return 'null';
     });
@@ -387,9 +467,43 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
         return `await ${expression}`;
       }
 
+      case ASTType.OPTIONAL_CHAIN: {
+        const obj = this.compileExpression(expr.object, locals, componentName);
+        return `${obj}?.${expr.property}`;
+      }
+
       default:
         return 'null';
     }
+  }
+
+  compileViewSwitch(node, locals = new Set(), componentName) {
+    const disc = this.compileExpression(node.discriminant, locals, componentName);
+
+    // Build ternary chain: case1 ? [...] : case2 ? [...] : [default...]
+    let chain = '[]';
+    for (let i = node.cases.length - 1; i >= 0; i--) {
+      const c = node.cases[i];
+      const children = (c.children || []).map(child => {
+        if (child.type === ASTType.ELEMENT) return this.compileElement(child, locals, componentName);
+        if (child.type === ASTType.CONDITIONAL) return this.compileConditional(child, locals, componentName);
+        if (child.type === ASTType.LOOP) return this.compileLoop(child, locals, componentName);
+        if (child.type === ASTType.VIEW_SWITCH) return this.compileViewSwitch(child, locals, componentName);
+        return 'null';
+      });
+      const childrenArr = `[${children.join(', ')}]`;
+
+      if (c.test === null) {
+        // default case
+        chain = childrenArr;
+      } else {
+        const test = this.compileExpression(c.test, locals, componentName);
+        chain = `(_d === ${test}) ? ${childrenArr} : ${chain}`;
+      }
+    }
+
+    // Hoist discriminant into IIFE to avoid evaluating it multiple times
+    return `((_d) => ${chain})(${disc})`;
   }
 
   compileConditional(node, locals = new Set(), componentName) {

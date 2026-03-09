@@ -158,7 +158,7 @@ class Tokenizer {
     // Check for 2-character operators
     if (this.position + 1 < this.input.length) {
       const twoChar = char + this.input[this.position + 1];
-      if (['==', '!=', '>=', '<=', '=>', '&&', '||'].includes(twoChar)) {
+      if (['==', '!=', '>=', '<=', '=>', '&&', '||', '?.', '??'].includes(twoChar)) {
         this.advance();
         this.advance();
         return { type: TokenType.OPERATOR, value: twoChar, line: this.line, column: startColumn };

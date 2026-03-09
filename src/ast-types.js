@@ -46,6 +46,30 @@ const ASTType = {
 
   // Responsive styles
   MEDIA_QUERY: 'MediaQuery',
+
+  // Error handling
+  TRY_STMT: 'TryStatement',
+  THROW_STMT: 'ThrowStatement',
+
+  // Switch (function bodies)
+  SWITCH_STMT: 'SwitchStatement',
+
+  // Switch (view blocks — compiles to hoisted ternaries)
+  VIEW_SWITCH: 'ViewSwitch',
+
+  // Top-level declarations
+  ENUM_DECL: 'EnumDeclaration',
+  MODEL_DECL: 'ModelDeclaration',
+
+  // Optional chaining
+  OPTIONAL_CHAIN: 'OptionalChain',
+
+  // Loops
+  WHILE_STMT: 'WhileStatement',
+  BREAK_STMT: 'BreakStatement',
+  CONTINUE_STMT: 'ContinueStatement',
+  FOR_IN_STMT: 'ForInStatement',    // for (item in list) in function bodies
+  FOR_CLASSIC: 'ForClassicStatement', // for (i = 0; i < n; i = i + 1)
 };
 
 module.exports = {

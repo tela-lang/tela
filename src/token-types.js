@@ -37,7 +37,21 @@ const Keywords = [
   'watch',
   'async',
   'await',
-  'emit'
+  'emit',
+  // Error handling
+  'try',
+  'catch',
+  'finally',
+  'throw',
+  // Control flow
+  'switch',
+  'case',
+  'while',
+  'break',
+  'continue',
+  // Declarations
+  'enum',
+  'model',
 ];
 
 module.exports = {
