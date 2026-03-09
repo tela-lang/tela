@@ -1,0 +1,101 @@
+component App {
+  state page: String = "introduction"
+
+  function nav(p) { page = p }
+
+  view {
+    div {
+      style { font-family: "system-ui, -apple-system, sans-serif" min-height: "100vh" background: "#f8fafb" }
+
+      header {
+        style {
+          background: "#34786e"
+          color: "white"
+          padding: "0 24px"
+          display: "flex"
+          align-items: "center"
+          justify-content: "space-between"
+          height: "60px"
+          position: "sticky"
+          top: 0
+          z-index: "100"
+          box-shadow: "0 2px 8px rgba(0,0,0,0.15)"
+        }
+        div {
+          style { display: "flex" align-items: "center" gap: "12px" }
+          span {
+            style { font-size: "26px" font-weight: "800" letter-spacing: "-0.5px" }
+            content: "Tela"
+          }
+          span {
+            style {
+              background: "rgba(255,255,255,0.2)"
+              font-size: "11px"
+              padding: "2px 8px"
+              border-radius: "20px"
+              font-weight: "600"
+            }
+            content: "v0.1 alpha"
+          }
+        }
+        div {
+          style { display: "flex" gap: "16px" align-items: "center" }
+          a {
+            href: "https://github.com/tela-lang/tela"
+            style { color: "rgba(255,255,255,0.85)" font-size: "14px" text-decoration: "none" }
+            content: "GitHub"
+          }
+          a {
+            href: "https://www.npmjs.com/package/@tela-lang/tela"
+            style { color: "rgba(255,255,255,0.85)" font-size: "14px" text-decoration: "none" }
+            content: "npm"
+          }
+          button {
+            @click: nav("introduction")
+            style { background: "rgba(255,255,255,0.2)" color: "white" border: "none" padding: "6px 16px" border-radius: "6px" cursor: "pointer" font-size: "14px" }
+            content: "Docs"
+          }
+        }
+      }
+
+      if (page === "hero") {
+        Hero { onStart: nav }
+      } else {
+        div {
+          style { display: "flex" max-width: "1200px" margin: "0 auto" width: "100%" }
+          Sidebar { activePage: page onNav: nav }
+          div {
+            style { flex: 1 padding: "40px 48px" min-width: 0 max-width: "760px" }
+            if (page === "introduction") {
+              Introduction {}
+            } else if (page === "getting-started") {
+              GettingStarted {}
+            } else if (page === "component-anatomy") {
+              ComponentAnatomy {}
+            } else if (page === "reactive-state") {
+              ReactiveState {}
+            } else if (page === "props") {
+              PropsSection {}
+            } else if (page === "template-syntax") {
+              TemplateSyntax {}
+            } else if (page === "events") {
+              EventsSection {}
+            } else if (page === "control-flow") {
+              ControlFlow {}
+            } else if (page === "two-way-binding") {
+              TwoWayBinding {}
+            } else if (page === "async-data") {
+              AsyncData {}
+            } else if (page === "child-components") {
+              ChildComponents {}
+            } else if (page === "lifecycle") {
+              Lifecycle {}
+            } else {
+              SpringBoot {}
+            }
+          }
+        }
+      }
+    }
+  }
+}

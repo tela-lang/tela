@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela &mdash; Documentation</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, sans-serif; }
+    a { color: inherit; }
+    pre, code { font-family: 'JetBrains Mono', 'Fira Code', Consolas, monospace; }
+  </style>
+  <!-- Highlight.js for code blocks -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <!-- Generated CSS for all components -->
+  <link rel="stylesheet" href="components/App.css">
+  <link rel="stylesheet" href="components/Sidebar.css">
+  <link rel="stylesheet" href="components/Hero.css">
+  <link rel="stylesheet" href="components/Introduction.css">
+  <link rel="stylesheet" href="components/GettingStarted.css">
+  <link rel="stylesheet" href="components/ComponentAnatomy.css">
+  <link rel="stylesheet" href="components/ReactiveState.css">
+  <link rel="stylesheet" href="components/PropsSection.css">
+  <link rel="stylesheet" href="components/TemplateSyntax.css">
+  <link rel="stylesheet" href="components/EventsSection.css">
+  <link rel="stylesheet" href="components/ControlFlow.css">
+  <link rel="stylesheet" href="components/TwoWayBinding.css">
+  <link rel="stylesheet" href="components/AsyncData.css">
+  <link rel="stylesheet" href="components/ChildComponents.css">
+  <link rel="stylesheet" href="components/Lifecycle.css">
+  <link rel="stylesheet" href="components/SpringBoot.css">
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Code example data -->
+  <script src="data.js"></script>
+
+  <!-- Tela Runtime -->
+  <script src="https://unpkg.com/@tela-lang/tela@latest/dist/runtime.umd.js"></script>
+
+  <!-- Compiled Tela components (sections first, then App last) -->
+  <script src="components/Hero.js"></script>
+  <script src="components/Sidebar.js"></script>
+  <script src="components/Introduction.js"></script>
+  <script src="components/GettingStarted.js"></script>
+  <script src="components/ComponentAnatomy.js"></script>
+  <script src="components/ReactiveState.js"></script>
+  <script src="components/PropsSection.js"></script>
+  <script src="components/TemplateSyntax.js"></script>
+  <script src="components/EventsSection.js"></script>
+  <script src="components/ControlFlow.js"></script>
+  <script src="components/TwoWayBinding.js"></script>
+  <script src="components/AsyncData.js"></script>
+  <script src="components/ChildComponents.js"></script>
+  <script src="components/Lifecycle.js"></script>
+  <script src="components/SpringBoot.js"></script>
+  <script src="components/App.js"></script>
+
+  <!-- Mount -->
+  <script>
+    Tela.render(App, document.getElementById('app'));
+  </script>
+
+  <!-- Highlight.js — run after Tela has rendered -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    // Re-run highlighting whenever the page navigates (Tela re-renders)
+    const highlight = () => setTimeout(() => {
+      document.querySelectorAll('pre code').forEach(el => {
+        if (!el.dataset.highlighted) hljs.highlightElement(el);
+      });
+    }, 50);
+    // Initial highlight
+    highlight();
+    // Re-highlight on any mutation to code blocks
+    const observer = new MutationObserver(highlight);
+    observer.observe(document.getElementById('app'), { childList: true, subtree: true });
+  </script>
+
+  <footer style="text-align:center;padding:40px;color:#9ca3af;font-size:13px;border-top:1px solid #e5e7eb;margin-top:0;background:white;">
+    Built with <strong style="color:#34786e">Tela</strong> &middot; MIT License &middot; <a href="https://github.com/tela-lang/tela">GitHub</a> &middot; <a href="https://npmjs.com/package/@tela-lang/tela">npm</a>
+  </footer>
+</body>
+</html>

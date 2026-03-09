@@ -1,0 +1,11 @@
+{
+  "name": "my-tela-app",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "npx @tela-lang/tela compile-all components/ --global",
+    "dev": "npx @tela-lang/tela compile-all components/ --global"
+  },
+  "devDependencies": {
+    "@tela-lang/tela": "latest"
+  }
+}

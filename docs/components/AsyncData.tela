@@ -1,0 +1,79 @@
+component AsyncData {
+  state asyncCode: String = ""
+
+  onMount {
+    asyncCode = window.TELA_DOCS.asyncCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Async and Data Fetching"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela supports async functions with the await keyword. Use them to fetch data from APIs and update state when the response arrives."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Full CRUD Example"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "A complete component with load, create, and delete operations:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${asyncCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Best Practices"
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "12px" }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Always set a loading flag"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Set loading = true before the request and loading = false after. Use if (loading) in the view to show a spinner."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Use immutable array updates"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Use concat, filter, and map to produce new arrays rather than mutating in place. Tela detects changes by reference."
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" }
+          div {
+            style { font-weight: "700" color: "#374151" margin-bottom: "4px" font-size: "14px" }
+            content: "Kick off fetches in onMount"
+          }
+          div {
+            style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
+            content: "Call your async function from the onMount lifecycle hook so the data loads as soon as the component appears."
+          }
+        }
+      }
+    }
+  }
+}

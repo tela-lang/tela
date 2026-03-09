@@ -1,0 +1,71 @@
+component SpringBoot {
+  state mavenCode: String = ""
+  state springHtmlCode: String = ""
+
+  onMount {
+    mavenCode = window.TELA_DOCS.mavenCode
+    springHtmlCode = window.TELA_DOCS.springHtmlCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Spring Boot Integration"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "Tela pairs naturally with Spring Boot. Place your .tela files in src/main/resources/static/components and compile them as part of your Maven build."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Maven Plugin Configuration"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Add the exec-maven-plugin to your pom.xml to compile Tela files during the generate-resources phase:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-xml" content: "${mavenCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "HTML Template"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "In your Thymeleaf or plain HTML template, load the compiled assets and mount the app:"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-html" content: "${springHtmlCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Controller Pattern"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "16px" }
+        content: "Your Spring Boot controllers expose REST endpoints as usual. Tela components fetch data from these endpoints using the browser fetch API. No special server-side integration is required — Tela is purely a frontend concern."
+      }
+      div {
+        style { background: "#f0faf8" border-left: "4px solid #34786e" border-radius: "0 8px 8px 0" padding: "16px 20px" }
+        p {
+          style { margin: 0 font-size: "14px" color: "#1a4a42" line-height: "1.7" }
+          content: "The PetClinic example in this repository shows a complete Spring Boot and Tela integration with Owners, Pets, Vets, and Visits managed through a REST API."
+        }
+      }
+    }
+  }
+}

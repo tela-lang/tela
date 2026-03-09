@@ -1,0 +1,125 @@
+component Vets {
+  state vets: Array = []
+  state loading: Boolean = true
+  state showForm: Boolean = false
+  state newFirstName: String = ""
+  state newLastName: String = ""
+  state newSpecialties: String = ""
+
+  onMount {
+    loadVets()
+  }
+
+  async function loadVets() {
+    loading = true
+    response = await fetch("/api/vets")
+    vets = await response.json()
+    loading = false
+  }
+
+  async function addVet() {
+    response = await fetch("/api/vets", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ firstName: newFirstName, lastName: newLastName, specialties: newSpecialties }) })
+    newVet = await response.json()
+    vets = vets.concat([newVet])
+    newFirstName = ""
+    newLastName = ""
+    newSpecialties = ""
+    showForm = false
+  }
+
+  async function deleteVet(id) {
+    await fetch("/api/vets/" + id, { method: "DELETE" })
+    response = await fetch("/api/vets")
+    vets = await response.json()
+  }
+
+  function toggleForm() {
+    showForm = !showForm
+  }
+
+  view {
+    div {
+      div {
+        style { display: "flex" justify-content: "space-between" align-items: "center" margin-bottom: "24px" }
+        h2 { style { margin: 0 color: "#2c3e50" } content: "Veterinarians" }
+        button {
+          style { background: "#34786e" color: "white" border: "none" padding: "10px 20px" border-radius: "6px" cursor: "pointer" font-size: "14px" }
+          content: "Add Vet"
+          @click: toggleForm
+        }
+      }
+
+      if (showForm) {
+        div {
+          style { background: "white" border: "1px solid #e0e0e0" border-radius: "8px" padding: "24px" margin-bottom: "24px" }
+          h3 { style { margin: "0 0 16px" color: "#34786e" } content: "New Veterinarian" }
+          div {
+            style { display: "grid" grid-template-columns: "1fr 1fr 1fr" gap: "12px" }
+            input {
+              bind value: newFirstName
+              placeholder: "First Name"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newLastName
+              placeholder: "Last Name"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newSpecialties
+              placeholder: "Specialties (e.g. radiology)"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+          }
+          div {
+            style { margin-top: "16px" display: "flex" gap: "8px" }
+            button {
+              style { background: "#34786e" color: "white" border: "none" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Save"
+              @click: addVet
+            }
+            button {
+              style { background: "#f5f5f5" color: "#333" border: "1px solid #ddd" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Cancel"
+              @click: toggleForm
+            }
+          }
+        }
+      }
+
+      if (loading) {
+        p { style { color: "#888" } content: "Loading..." }
+      } else {
+        div {
+          style { display: "grid" grid-template-columns: "repeat(3, 1fr)" gap: "16px" }
+          for (v in vets) {
+            div {
+              style {
+                background: "white"
+                border-radius: "8px"
+                padding: "20px"
+                box-shadow: "0 2px 4px rgba(0,0,0,0.08)"
+                border-left: "4px solid #34786e"
+              }
+              div {
+                style { display: "flex" justify-content: "space-between" align-items: "start" }
+                div {
+                  h3 { style { margin: "0 0 4px" color: "#2c3e50" } content: "Dr. ${v.firstName} ${v.lastName}" }
+                  p {
+                    style { margin: 0 color: "#888" font-size: "13px" }
+                    content: "${v.specialties}"
+                  }
+                }
+                button {
+                  style { background: "none" border: "none" color: "#ccc" cursor: "pointer" font-size: "18px" padding: "0" }
+                  content: "×"
+                  @click: deleteVet(v.id)
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

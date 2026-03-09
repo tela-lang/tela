@@ -1,0 +1,11 @@
+.tela-App-div-0 { font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; background: #f8fafb }
+.tela-App-header-1 { background: #34786e; color: white; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 60px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0,0,0,0.15) }
+.tela-App-div-2 { display: flex; align-items: center; gap: 12px }
+.tela-App-span-3 { font-size: 26px; font-weight: 800; letter-spacing: -0.5px }
+.tela-App-span-4 { background: rgba(255,255,255,0.2); font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 600 }
+.tela-App-div-5 { display: flex; gap: 16px; align-items: center }
+.tela-App-a-6 { color: rgba(255,255,255,0.85); font-size: 14px; text-decoration: none }
+.tela-App-a-7 { color: rgba(255,255,255,0.85); font-size: 14px; text-decoration: none }
+.tela-App-button-8 { background: rgba(255,255,255,0.2); color: white; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 14px }
+.tela-App-div-9 { display: flex; max-width: 1200px; margin: 0 auto; width: 100% }
+.tela-App-div-10 { flex: 1; padding: 40px 48px; min-width: 0; max-width: 760px }

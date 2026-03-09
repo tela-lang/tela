@@ -1,0 +1,17 @@
+node_modules/
+*.log
+.DS_Store
+.env
+dist/*.map
+target/
+.idea/
+*.iml
+.vscode/
+package-lock.json
+
+# Maven build output for Spring example
+examples/petclinic-tela/target/
+
+# Compiled example assets can be regenerated
+examples/**/*.js
+examples/**/*.css

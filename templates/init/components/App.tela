@@ -1,0 +1,71 @@
+component App {
+  state count: Number = 0
+  state message: String = "Hello from Tela!"
+
+  function increment() {
+    count = count + 1
+  }
+
+  function decrement() {
+    count = count - 1
+  }
+
+  view {
+    div {
+      style {
+        font-family: "system-ui, -apple-system, sans-serif"
+        max-width: "480px"
+        margin: "80px auto"
+        text-align: "center"
+        padding: "40px"
+        border-radius: "12px"
+        box-shadow: "0 4px 24px rgba(0,0,0,0.1)"
+        background: "white"
+      }
+
+      h1 {
+        style { color: "#34786e" font-size: "32px" margin: "0 0 8px" }
+        content: "テカ Tela"
+      }
+      p {
+        style { color: "#6b7280" margin: "0 0 32px" }
+        content: "${message}"
+      }
+
+      div {
+        style { font-size: "64px" font-weight: "800" color: "#111827" margin-bottom: "24px" }
+        content: "${count}"
+      }
+
+      div {
+        style { display: "flex" gap: "12px" justify-content: "center" }
+        button {
+          @click: decrement
+          style {
+            padding: "10px 24px"
+            font-size: "20px"
+            border: "2px solid #34786e"
+            background: "white"
+            color: "#34786e"
+            border-radius: "8px"
+            cursor: "pointer"
+          }
+          content: "−"
+        }
+        button {
+          @click: increment
+          style {
+            padding: "10px 24px"
+            font-size: "20px"
+            background: "#34786e"
+            color: "white"
+            border: "none"
+            border-radius: "8px"
+            cursor: "pointer"
+          }
+          content: "+"
+        }
+      }
+    }
+  }
+}

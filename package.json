@@ -1,0 +1,42 @@
+{
+  "name": "@tela-lang/tela",
+  "version": "0.1.0",
+  "description": "A declarative UI language that compiles to plain JS + CSS. Reactive components, scoped styles, zero runtime overhead.",
+  "main": "src/index.js",
+  "bin": {
+    "tela": "./bin/tela.js"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "dist/",
+    "templates/"
+  ],
+  "scripts": {
+    "test": "node --test src/test/*.test.js",
+    "start": "node bin/tela.js",
+    "build": "node scripts/build-runtime.js"
+  },
+  "keywords": [
+    "tela",
+    "frontend",
+    "language",
+    "compiler",
+    "reactive",
+    "components",
+    "single-file-components",
+    "ui"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tela-lang/tela.git"
+  },
+  "homepage": "https://tela-lang.github.io/tela",
+  "license": "MIT",
+  "devDependencies": {
+    "jsdom": "^27.4.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

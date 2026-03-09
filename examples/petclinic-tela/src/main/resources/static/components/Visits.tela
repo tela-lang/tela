@@ -1,0 +1,129 @@
+component Visits {
+  state visits: Array = []
+  state loading: Boolean = true
+  state showForm: Boolean = false
+  state newPetId: String = ""
+  state newDate: String = ""
+  state newDescription: String = ""
+
+  onMount {
+    loadVisits()
+  }
+
+  async function loadVisits() {
+    loading = true
+    response = await fetch("/api/visits")
+    visits = await response.json()
+    loading = false
+  }
+
+  async function addVisit() {
+    response = await fetch("/api/visits", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ petId: newPetId, visitDate: newDate, description: newDescription }) })
+    newVisit = await response.json()
+    visits = visits.concat([newVisit])
+    newPetId = ""
+    newDate = ""
+    newDescription = ""
+    showForm = false
+  }
+
+  async function deleteVisit(id) {
+    await fetch("/api/visits/" + id, { method: "DELETE" })
+    response = await fetch("/api/visits")
+    visits = await response.json()
+  }
+
+  function toggleForm() {
+    showForm = !showForm
+  }
+
+  view {
+    div {
+      div {
+        style { display: "flex" justify-content: "space-between" align-items: "center" margin-bottom: "24px" }
+        h2 { style { margin: 0 color: "#2c3e50" } content: "Visits" }
+        button {
+          style { background: "#34786e" color: "white" border: "none" padding: "10px 20px" border-radius: "6px" cursor: "pointer" font-size: "14px" }
+          content: "Add Visit"
+          @click: toggleForm
+        }
+      }
+
+      if (showForm) {
+        div {
+          style { background: "white" border: "1px solid #e0e0e0" border-radius: "8px" padding: "24px" margin-bottom: "24px" }
+          h3 { style { margin: "0 0 16px" color: "#34786e" } content: "New Visit" }
+          div {
+            style { display: "grid" grid-template-columns: "1fr 1fr 2fr" gap: "12px" }
+            input {
+              bind value: newPetId
+              placeholder: "Pet ID"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newDate
+              placeholder: "Date (YYYY-MM-DD)"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+            input {
+              bind value: newDescription
+              placeholder: "Description"
+              style { padding: "8px 12px" border: "1px solid #ddd" border-radius: "4px" font-size: "14px" }
+            }
+          }
+          div {
+            style { margin-top: "16px" display: "flex" gap: "8px" }
+            button {
+              style { background: "#34786e" color: "white" border: "none" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Save"
+              @click: addVisit
+            }
+            button {
+              style { background: "#f5f5f5" color: "#333" border: "1px solid #ddd" padding: "8px 20px" border-radius: "4px" cursor: "pointer" }
+              content: "Cancel"
+              @click: toggleForm
+            }
+          }
+        }
+      }
+
+      if (loading) {
+        p { style { color: "#888" } content: "Loading..." }
+      } else {
+        div {
+          style { background: "white" border-radius: "8px" box-shadow: "0 2px 4px rgba(0,0,0,0.05)" overflow: "hidden" }
+          table {
+            style { width: "100%" border-collapse: "collapse" }
+            thead {
+              tr {
+                style { background: "#f8f9fa" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Pet ID" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Date" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Description" }
+                th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Actions" }
+              }
+            }
+            tbody {
+              for (v in visits) {
+                tr {
+                  style { border-bottom: "1px solid #f0f0f0" }
+                  td { style { padding: "12px 16px" color: "#888" } content: "#${v.petId}" }
+                  td { style { padding: "12px 16px" color: "#34786e" font-weight: "500" } content: "${v.visitDate}" }
+                  td { style { padding: "12px 16px" } content: "${v.description}" }
+                  td {
+                    style { padding: "12px 16px" }
+                    button {
+                      style { background: "#ff4444" color: "white" border: "none" padding: "4px 12px" border-radius: "4px" cursor: "pointer" font-size: "13px" }
+                      content: "Delete"
+                      @click: deleteVisit(v.id)
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

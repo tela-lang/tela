@@ -1,0 +1,110 @@
+component Sidebar {
+  prop activePage: String
+  prop onNav: Function
+
+  view {
+    nav {
+      style {
+        width: "260px"
+        min-height: "calc(100vh - 60px)"
+        background: "white"
+        border-right: "1px solid #e5e7eb"
+        padding: "24px 0"
+        position: "sticky"
+        top: "60px"
+        height: "calc(100vh - 60px)"
+        overflow-y: "auto"
+      }
+
+      div {
+        style { padding: "0 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Overview"
+      }
+      button {
+        @click: onNav("introduction")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Introduction"
+      }
+      button {
+        @click: onNav("getting-started")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Getting Started"
+      }
+      button {
+        @click: onNav("component-anatomy")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Component Anatomy"
+      }
+
+      div {
+        style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Core Concepts"
+      }
+      button {
+        @click: onNav("reactive-state")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Reactive State"
+      }
+      button {
+        @click: onNav("props")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Props"
+      }
+      button {
+        @click: onNav("template-syntax")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Template Syntax"
+      }
+
+      div {
+        style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Interactivity"
+      }
+      button {
+        @click: onNav("events")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Events"
+      }
+      button {
+        @click: onNav("control-flow")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Control Flow"
+      }
+      button {
+        @click: onNav("two-way-binding")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Two-way Binding"
+      }
+
+      div {
+        style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Advanced"
+      }
+      button {
+        @click: onNav("async-data")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Async and Data Fetching"
+      }
+      button {
+        @click: onNav("child-components")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Child Components"
+      }
+      button {
+        @click: onNav("lifecycle")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Lifecycle Hooks"
+      }
+
+      div {
+        style { padding: "16px 16px 8px" font-size: "11px" font-weight: "700" color: "#9ca3af" text-transform: "uppercase" letter-spacing: "0.08em" }
+        content: "Integrations"
+      }
+      button {
+        @click: onNav("spring-boot")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Spring Boot"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+examples/
+docs/
+scripts/
+.vscode/
+*.test.js
+node_modules/
+.git/

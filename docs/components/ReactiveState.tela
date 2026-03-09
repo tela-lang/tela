@@ -1,0 +1,54 @@
+component ReactiveState {
+  state stateCode: String = ""
+
+  onMount {
+    stateCode = window.TELA_DOCS.stateCode
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Reactive State"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "State is the heart of every Tela component. Declare it with the state keyword and Tela tracks every read and write automatically."
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "24px" }
+        content: "When you assign a new value to a state variable, Tela re-renders only the DOM nodes that depend on it. No virtual DOM diffing, no manual invalidation."
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Example: Timer"
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${stateCode}" }
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        content: "Supported State Types"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "16px" }
+        content: "Tela supports four state types: String for text values, Number for numeric values, Boolean for true/false flags, and Array for lists of items. The type annotation is used by the compiler to generate efficient update code."
+      }
+      div {
+        style { background: "#f0faf8" border-left: "4px solid #34786e" border-radius: "0 8px 8px 0" padding: "16px 20px" }
+        p {
+          style { margin: 0 font-size: "14px" color: "#1a4a42" line-height: "1.7" }
+          content: "State is always local. Two instances of the same component have completely independent state — no shared mutable globals."
+        }
+      }
+    }
+  }
+}
