@@ -9,6 +9,7 @@
   <a href="https://github.com/tela-lang/tela/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@tela-lang/tela" alt="license MIT"></a>
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome">
   <a href="https://tela-lang.github.io/tela"><img src="https://img.shields.io/badge/docs-online-34786e" alt="docs"></a>
+  <a href="https://github.com/tela-lang/tela/blob/main/SPEC.md"><img src="https://img.shields.io/badge/spec-SPEC.md-blue" alt="language spec"></a>
 </p>
 
 <p align="center">
@@ -171,19 +172,16 @@ Tela.render(MyComponent, document.getElementById('app'));
 ## 🏗️ Language Overview
 
 ```tela
-import { Header } from './Header.tela'
+import Header from "./Header.tela"
 
 component UserDashboard {
   // ── State ────────────────────────────────────────────
-  state users:    Array   = []
-  state loading:  Boolean = false
-  state query:    String  = ""
+  state users:   Array   = []
+  state loading: Boolean = false
+  state query:   String  = ""
 
   // ── Props ────────────────────────────────────────────
   prop title: String
-
-  // ── Computed ─────────────────────────────────────────
-  computed filteredUsers = users.filter(u => u.name.includes(query))
 
   // ── Lifecycle ────────────────────────────────────────
   onMount {
@@ -193,30 +191,29 @@ component UserDashboard {
   // ── Functions ────────────────────────────────────────
   async function fetchUsers() {
     loading = true
-    const res  = await fetch('/api/users')
-    const data = await res.json()
-    users   = data
-    loading = false
+    response = await fetch("/api/users")
+    users    = await response.json()
+    loading  = false
   }
 
   function deleteUser(id) {
-    users = users.filter(u => u.id !== id)
+    fetchUsers()
   }
 
   // ── View ─────────────────────────────────────────────
   view {
     div {
       // Render a child component
-      Header { prop title: title }
+      Header { title: title }
 
       // Two-way binding on an input
-      input { bind value: query  placeholder: "Search…" }
+      input { bind value: query  placeholder: "Search..." }
 
       if (loading) {
-        p { content: "Loading…" }
+        p { content: "Loading..." }
       } else {
         div {
-          for (user in filteredUsers) {
+          for (user in users) {
             div {
               style { display: "flex"  justify-content: "space-between"  padding: 8px }
               span { content: "${user.name}" }
@@ -235,19 +232,28 @@ component UserDashboard {
 
 ### Core syntax at a glance
 
-| Keyword | Purpose |
+| Syntax | Purpose |
 |---|---|
 | `state name: Type = value` | Reactive local state |
 | `prop name: Type` | Input from parent |
 | `computed name = expr` | Derived value, auto-updates |
-| `onMount { }` | Runs after first render |
+| `route path: String` | Reactive URL variable for client-side routing |
+| `enum Name { A B C }` | Compile-time constant set |
+| `model Name { field: Type }` | Data-shape factory |
+| `onMount / onUpdate / onDestroy { }` | Lifecycle hooks |
 | `async function name() { }` | Async function with `await` |
+| `emit eventName(value)` | Fire a custom event to the parent |
 | `bind value: stateVar` | Two-way input binding |
 | `@click: fn` | Event handler |
 | `if (cond) { } else { }` | Conditional rendering |
 | `for (item in list) { }` | List rendering |
+| `switch (expr) { case v: ... }` | Switch/case in logic and view |
+| `while (cond) { }` | While loop |
+| `try { } catch (e) { }` | Error handling |
 | `content: "Hello ${name}"` | Text with interpolation |
 | `style { prop: value }` | Scoped styles (static → CSS, dynamic → inline) |
+
+**Full language reference:** [SPEC.md](./SPEC.md) · [Docs site](https://tela-lang.github.io/tela)
 
 ---
 
