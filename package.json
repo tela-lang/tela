@@ -1,6 +1,6 @@
 {
   "name": "@tela-lang/tela",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A declarative UI language that compiles to plain JS + CSS. Reactive components, scoped styles, zero runtime overhead.",
   "main": "src/index.js",
   "bin": {
