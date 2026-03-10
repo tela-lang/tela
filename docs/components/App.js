@@ -15,6 +15,8 @@ const App = Tela.defineComponent({
 
     
 
+    
+
     const nav = (p) => {
       state_App.page = p;
       state_App.sidebarOpen = false;

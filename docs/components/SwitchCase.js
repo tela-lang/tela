@@ -17,6 +17,8 @@ const SwitchCase = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_SwitchCase.switchFunctionCode = window.TELA_DOCS.switchFunctionCode;
       state_SwitchCase.switchViewCode = window.TELA_DOCS.switchViewCode;

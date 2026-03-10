@@ -19,6 +19,8 @@ const Routing = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_Routing.routingCode = window.TELA_DOCS.routingCode;
       state_Routing.routingParamsCode = window.TELA_DOCS.routingParamsCode;

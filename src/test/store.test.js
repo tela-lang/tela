@@ -222,8 +222,8 @@ test('path state init uses Tela.matchRoute when patterns exist', () => {
       }
     }
   `);
-  assert.ok(js.includes('window.location.pathname).pattern'), 'path init uses matchRoute pattern');
-  assert.ok(js.includes('window.location.pathname).params'), 'params init uses matchRoute params');
+  assert.ok(js.includes('let path = Tela.matchRoute'), 'path init uses matchRoute as plain let');
+  assert.ok(js.includes('let params = Tela.matchRoute'), 'params init uses matchRoute as plain let');
 });
 
 test('navigate updates both path and params', () => {
@@ -252,8 +252,8 @@ test('single route (no params) still works as before', () => {
       view { div {} }
     }
   `);
-  assert.ok(js.includes('path: window.location.pathname'), 'no patterns = raw pathname');
-  assert.ok(!js.includes('params'), 'no params variable emitted');
+  assert.ok(js.includes('let path = window.location.pathname'), 'no patterns = raw pathname as plain let');
+  assert.ok(!js.includes('let params'), 'no params variable emitted');
 });
 
 // ─── Runtime: Tela.matchRoute ─────────────────────────────────────────────────

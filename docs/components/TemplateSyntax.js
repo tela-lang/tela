@@ -17,6 +17,8 @@ const TemplateSyntax = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_TemplateSyntax.templateCode = window.TELA_DOCS.templateCode;
       state_TemplateSyntax.styleCode = window.TELA_DOCS.styleCode;

@@ -17,6 +17,8 @@ const ErrorHandling = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_ErrorHandling.tryCatchCode = window.TELA_DOCS.tryCatchCode;
       state_ErrorHandling.throwCode = window.TELA_DOCS.throwCode;

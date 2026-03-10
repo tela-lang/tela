@@ -18,6 +18,8 @@ const GlobalStore = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_GlobalStore.storeBasicCode = window.TELA_DOCS.storeBasicCode;
       state_GlobalStore.storeExportCode = window.TELA_DOCS.storeExportCode;

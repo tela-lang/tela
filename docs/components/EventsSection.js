@@ -17,6 +17,8 @@ const EventsSection = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_EventsSection.eventsCode = window.TELA_DOCS.eventsCode;
       state_EventsSection.eventsArgCode = window.TELA_DOCS.eventsArgCode;

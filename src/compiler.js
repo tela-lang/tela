@@ -68,8 +68,8 @@ class Compiler {
     component.state.forEach(s => this.stateVariables.add(s.name));
     component.props.forEach(p => this.propVariables.add(p.name));
     (component.computed || []).forEach(c => this.computedVariables.add(c.name));
-    // Route vars behave like state (reads/writes go through state_X.name)
-    (component.routes || []).forEach(r => this.stateVariables.add(r.name));
+    // Route vars are plain let variables (NOT reactive) so path+params update atomically
+    // before a single instance.update() call. Do NOT add them to stateVariables.
 
     // Route setup: detect path (String) and params (Object) route vars
     const routes = component.routes || [];
@@ -78,52 +78,53 @@ class Compiler {
     const routePatterns = pathRoute ? this._buildRoutePatterns(component) : [];
     const patternsJson = JSON.stringify(routePatterns);
 
-    const stateInit = [
-      ...component.state.map(s => {
-        const value = s.defaultValue
-          ? this.compileExpression(s.defaultValue, new Set(), component.name)
-          : 'null';
-        return `${s.name}: ${value}`;
-      }),
-      ...(pathRoute
-        ? routePatterns.length > 0
-          ? [`${pathRoute.name}: Tela.matchRoute(${patternsJson}, window.location.pathname).pattern`]
-          : [`${pathRoute.name}: window.location.pathname`]
-        : []
-      ),
-      ...(paramsRoute
-        ? [`${paramsRoute.name}: Tela.matchRoute(${patternsJson}, window.location.pathname).params`]
-        : []
-      )
-    ].join(',\n      ');
+    const stateInit = component.state.map(s => {
+      const value = s.defaultValue
+        ? this.compileExpression(s.defaultValue, new Set(), component.name)
+        : 'null';
+      return `${s.name}: ${value}`;
+    }).join(',\n      ');
 
     const functions = component.functions
       .map(fn => this.compileFunction(fn, component.name))
       .join('\n\n    ');
 
-    // Routing setup: navigate() + popstate listener + cleanup
+    // Routing setup: plain let vars (not reactive) + navigate() + popstate listener + cleanup
+    // Route vars are plain lets so path+params update atomically; one instance.update() fires.
     const userFunctionNames = new Set((component.functions || []).map(f => f.name));
+    let routeVarDecls = '';
     let routeSetup = '';
     if (routes.length > 0 && pathRoute) {
-      const statePathVar = `state_${component.name}.${pathRoute.name}`;
-      const stateParamsVar = paramsRoute ? `state_${component.name}.${paramsRoute.name}` : null;
+      // Declare route vars as plain let (NOT part of Tela.reactive)
+      const initPath = routePatterns.length > 0
+        ? `Tela.matchRoute(${patternsJson}, window.location.pathname).pattern`
+        : `window.location.pathname`;
+      const initParams = paramsRoute
+        ? `Tela.matchRoute(${patternsJson}, window.location.pathname).params`
+        : null;
+
+      routeVarDecls = `let ${pathRoute.name} = ${initPath};` +
+        (initParams ? `\n    let ${paramsRoute.name} = ${initParams};` : '');
+
+      const pathVar = pathRoute.name;
+      const paramsVar = paramsRoute ? paramsRoute.name : null;
       const hasPatterns = routePatterns.length > 0;
 
       const updateRouteVars = hasPatterns
         ? [
             `const _rm = Tela.matchRoute(${patternsJson}, dest);`,
-            `${statePathVar} = _rm.pattern;`,
-            stateParamsVar ? `${stateParamsVar} = _rm.params;` : ''
+            `${pathVar} = _rm.pattern;`,
+            paramsVar ? `${paramsVar} = _rm.params;` : ''
           ].filter(Boolean).join('\n      ')
-        : `${statePathVar} = dest;`;
+        : `${pathVar} = dest;`;
 
       const popstateUpdate = hasPatterns
         ? [
             `const _rm = Tela.matchRoute(${patternsJson}, window.location.pathname);`,
-            `${statePathVar} = _rm.pattern;`,
-            stateParamsVar ? `${stateParamsVar} = _rm.params;` : ''
+            `${pathVar} = _rm.pattern;`,
+            paramsVar ? `${paramsVar} = _rm.params;` : ''
           ].filter(Boolean).join('\n      ')
-        : `${statePathVar} = window.location.pathname;`;
+        : `${pathVar} = window.location.pathname;`;
 
       const navigateFn = userFunctionNames.has('navigate') ? '' :
         `const navigate = (dest) => {\n      window.history.pushState(null, '', dest);\n      ${updateRouteVars}\n      instance.update();\n    };`;
@@ -216,6 +217,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
     const state_${component.name} = Tela.reactive({
       ${stateInit}
     }, instance.update, ${watcherEntries ? `{ ${watcherEntries} }` : '{}'});
+
+    ${routeVarDecls}
 
     ${routeSetup}
 

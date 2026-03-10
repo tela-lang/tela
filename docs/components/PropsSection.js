@@ -17,6 +17,8 @@ const PropsSection = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_PropsSection.propsCode = window.TELA_DOCS.propsCode;
       state_PropsSection.propsUsageCode = window.TELA_DOCS.propsUsageCode;

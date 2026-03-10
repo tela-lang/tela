@@ -66,7 +66,8 @@ test('route var initialised from window.location.pathname', () => {
       view { div {} }
     }
   `);
-  assert.ok(js.includes('path: window.location.pathname'), 'should init from pathname');
+  // Route vars are plain let variables (not part of reactive state)
+  assert.ok(js.includes('let path = window.location.pathname'), 'should init from pathname as plain let');
 });
 
 test('navigate() is auto-injected when route is declared', () => {
@@ -87,7 +88,8 @@ test('navigate() updates state and calls instance.update()', () => {
       view { div {} }
     }
   `);
-  assert.ok(js.includes('state_App.path = dest'), 'should update state');
+  // Route vars are plain let — navigate assigns directly, then calls instance.update() once
+  assert.ok(js.includes('path = dest'), 'should update path variable');
   assert.ok(js.includes('instance.update()'), 'should trigger re-render');
 });
 
@@ -130,7 +132,7 @@ test('navigate injection skipped when developer defines their own navigate', () 
   assert.ok(js.includes('const navigate = (dest) =>'), 'user navigate should still compile');
 });
 
-test('route var resolves to state_X.name in view expressions', () => {
+test('route var resolves to plain variable in view expressions', () => {
   const js = compileOk(`
     component App {
       route path: String
@@ -144,10 +146,12 @@ test('route var resolves to state_X.name in view expressions', () => {
       }
     }
   `);
-  assert.ok(js.includes('state_App.path'), 'path should resolve to state_App.path in view');
+  // Route vars are plain let variables — accessed directly, not via state_X.
+  assert.ok(!js.includes('state_App.path'), 'path should NOT use state_App prefix');
+  assert.ok(js.includes('path'), 'path identifier should appear in view');
 });
 
-test('route var resolves to state_X.name in function bodies', () => {
+test('route var resolves to plain variable in function bodies', () => {
   const js = compileOk(`
     component App {
       route path: String
@@ -157,7 +161,9 @@ test('route var resolves to state_X.name in function bodies', () => {
       view { div {} }
     }
   `);
-  assert.ok(js.includes('state_App.path'), 'path should resolve to state_App.path in functions');
+  // Route vars are plain let variables — accessed directly, not via state_X.
+  assert.ok(!js.includes('state_App.path'), 'path should NOT use state_App prefix in functions');
+  assert.ok(js.includes('path'), 'path identifier should appear');
 });
 
 test('existing onDestroy hook gets cleanup appended', () => {
