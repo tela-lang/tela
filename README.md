@@ -1,7 +1,12 @@
 <h1 align="center">Tela</h1>
 
 <p align="center">
-  <strong>A declarative UI language that compiles to plain JS + CSS</strong>
+  <strong>Write frontend like you write backend.</strong>
+</p>
+
+<p align="center">
+  A declarative UI language with familiar brace syntax, explicit types, and zero build toolchain.<br>
+  Compiles <code>.tela</code> files to vanilla JS + CSS — drop a <code>&lt;script&gt;</code> tag and you're live.
 </p>
 
 <p align="center">
@@ -10,11 +15,6 @@
   <img src="https://img.shields.io/badge/PRs-welcome-brightgreen" alt="PRs welcome">
   <a href="https://tela-lang.github.io/tela"><img src="https://img.shields.io/badge/docs-online-34786e" alt="docs"></a>
   <a href="https://github.com/tela-lang/tela/blob/main/SPEC.md"><img src="https://img.shields.io/badge/spec-SPEC.md-blue" alt="language spec"></a>
-</p>
-
-<p align="center">
-  Write components in <code>.tela</code> files — state, logic, view, and styles all in one place.<br>
-  The compiler outputs vanilla JS and scoped CSS. Lightweight virtual DOM, no build toolchain, no framework lock-in.
 </p>
 
 ---

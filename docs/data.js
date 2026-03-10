@@ -3,10 +3,11 @@
 // Spring PetClinic example inspired by https://github.com/spring-projects/spring-petclinic
 window.TELA_DOCS = {
   // Introduction
-  introFeatures: `\u2022 Single File Components \u2014 state, logic, view in one .tela file
-\u2022 Reactive by default \u2014 state changes re-render minimal DOM
-\u2022 Scoped CSS \u2014 compiled to unique class names, no leakage
-\u2022 Tiny runtime \u2014 ~5KB vanilla JS, no dependencies
+  introFeatures: `\u2022 Familiar syntax \u2014 braces, explicit types, standard control flow
+\u2022 Single File Components \u2014 state, logic, view, and styles in one .tela file
+\u2022 Global store \u2014 shared reactive state, compiler auto-wires subscriptions
+\u2022 Scoped CSS \u2014 compiled to unique class names, zero bleed between components
+\u2022 Zero build toolchain \u2014 no webpack, no bundler; compile and drop a <script> tag
 \u2022 Backend-agnostic \u2014 works with Spring Boot, Express, Flask, or any server`,
 
   // Getting Started

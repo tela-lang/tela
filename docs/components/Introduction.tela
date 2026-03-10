@@ -16,12 +16,16 @@ component Introduction {
         content: ""
       }
       p {
-        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
-        content: "Tela is a compiled, component-based UI language. Write components in .tela files with a unified syntax for structure, style, and logic."
+        style { font-size: "20px" font-weight: "600" color: "#111827" line-height: "1.6" margin-bottom: "16px" }
+        content: "Write frontend like you write backend."
+      }
+      p {
+        style { font-size: "16px" color: "#4b5563" line-height: "1.8" margin-bottom: "16px" }
+        content: "If you work in Java, Go, or Python, switching to a JavaScript framework feels like moving to a different world — a new build system, new idioms, new mental model for things you already know how to do. Tela is a UI language designed to close that gap."
       }
       p {
         style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "32px" }
-        content: "The compiler outputs plain JS and CSS with no framework dependency at runtime. Drop the output into any web project with no build tool configuration required."
+        content: "Brace syntax, explicit type annotations, familiar control flow. Write .tela components and the compiler outputs plain JS and CSS — no framework at runtime, no bundler required."
       }
       h2 {
         style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }

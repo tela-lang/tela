@@ -1,7 +1,7 @@
 .tela-Hero-div-0 { text-align: center; padding: 100px 24px; background: linear-gradient(135deg, #34786e 0%, #1a4a42 100%); color: white; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center }
-.tela-Hero-div-1 { font-size: 80px; margin-bottom: 24px }
-.tela-Hero-h1-2 { font-size: 56px; font-weight: 800; margin: 0 0 16px; letter-spacing: -1px }
-.tela-Hero-p-3 { font-size: 22px; opacity: 0.85; margin: 0 0 48px; max-width: 540px; line-height: 1.6 }
+.tela-Hero-div-1 { font-size: 18px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; margin-bottom: 20px }
+.tela-Hero-h1-2 { font-size: 52px; font-weight: 800; margin: 0 0 20px; letter-spacing: -1.5px; line-height: 1.1; max-width: 680px }
+.tela-Hero-p-3 { font-size: 19px; opacity: 0.8; margin: 0 0 48px; max-width: 520px; line-height: 1.7 }
 .tela-Hero-div-4 { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px }
 .tela-Hero-button-5 { background: white; color: #34786e; border: none; padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 700; cursor: pointer }
 .tela-Hero-button-6 { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.5); padding: 14px 32px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer }
