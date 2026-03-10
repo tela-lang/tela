@@ -53,7 +53,7 @@ Whitespace (spaces, tabs, newlines) is insignificant between tokens. Newlines ar
 The following identifiers are reserved:
 
 ```
-component  prop      state     route
+component  prop      state     route     store
 function   async     return    await
 if         else      for       in
 while      break     continue
@@ -122,12 +122,14 @@ A Tela source file consists of zero or more **top-level declarations** followed 
 | `import`    | `import Name from "path"`           | —          | Import a component from another file |
 | `enum`      | `enum Name { VAL1 VAL2 ... }`       | Yes        | Compile-time constant set           |
 | `model`     | `model Name { f1: T f2: T ... }`    | Yes        | Data-shape factory function         |
+| `store`     | `store Name { f: T = v ... }`       | Yes        | Shared reactive state across components |
 
 Prefix any declaration with `export` to make it available for import by other files:
 
 ```tela
 export enum Status { ACTIVE INACTIVE }
 export model User { name: String email: String }
+export store AppStore { count: Number = 0 }
 ```
 
 A component can also be exported:
@@ -389,6 +391,7 @@ HTML elements use lowercase names (`div`, `p`, `button`, …). Child components 
 |----------------------|------------------------------------------------------------------|
 | `content: expr`      | Sets `element.textContent`                                       |
 | `attrName: expr`     | Sets HTML attribute (e.g. `href`, `src`, `class`, `placeholder`) |
+| `key: expr`          | Stable identity for keyed list reconciliation — not set as an HTML attribute |
 | `bind value: var`    | Two-way binding — reads and writes `var`; listens to `input` event |
 | `bind attr: var`     | Two-way binding on any attribute name                            |
 | `@click: handler`    | `addEventListener('click', ...)`                                 |
@@ -533,9 +536,32 @@ For deep-link support, the server must return `index.html` for all client-side r
 public String index() { return "index"; }
 ```
 
+### Route parameters
+
+Declare a second `route params: Object` to capture named segments from the URL:
+
+```tela
+component App {
+  route path: String
+  route params: Object
+
+  view {
+    switch (path) {
+      case "/":           Home {}
+      case "/users/:id":  UserDetail { id: params.id }
+      default:            NotFound {}
+    }
+  }
+}
+```
+
+The compiler extracts the pattern list from the `switch` case literals and generates a `Tela.matchRoute()` call at mount time and inside `navigate()`. The matched pattern is stored in `path`; the extracted parameter map is stored in `params`.
+
+Pattern syntax: `:paramName` segments match any single URL segment and capture its value.
+
 ### Constraints
 
-- A component may have at most one `route` declaration.
+- A component may declare at most two `route` variables: one `String` for the matched pattern, one `Object` for extracted URL parameters.
 - `route` is intended for top-level app shell components.
 
 ---

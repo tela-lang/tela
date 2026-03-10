@@ -127,6 +127,11 @@ component Sidebar {
         content: "Routing"
       }
       button {
+        @click: onNav("global-store")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Global Store"
+      }
+      button {
         @click: onNav("child-components")
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Child Components"
@@ -145,6 +150,11 @@ component Sidebar {
         @click: onNav("spring-boot")
         style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
         content: "Spring Boot"
+      }
+      button {
+        @click: onNav("dev-server")
+        style { display: "block" width: "100%" text-align: "left" padding: "8px 16px" border: "none" background: "transparent" cursor: "pointer" font-size: "14px" color: "#374151" border-radius: "6px" }
+        content: "Dev Server"
       }
 
       div {

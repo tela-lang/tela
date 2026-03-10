@@ -87,6 +87,10 @@ component LanguageSpec {
           div { style { font-family: "monospace" color: "#6b7280" } content: "x = expr" }
         }
         div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "Member assign" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "Store.field = expr  (writes to a store)" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
           div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "Return" }
           div { style { font-family: "monospace" color: "#6b7280" } content: "return expr  |  return" }
         }
@@ -178,8 +182,34 @@ component LanguageSpec {
         }
       }
 
+      // Top-level declarations
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "0 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "6. Top-level Declarations" }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "8px" margin-bottom: "32px" }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "import" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "import Name from \"./path\"" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "store" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "[export] store Name { field: Type = value }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "enum" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "[export] enum Name { A B C }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "model" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "[export] model Name { f: Type }" }
+        }
+        div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" display: "flex" gap: "16px" }
+          div { style { font-weight: "700" color: "#374151" min-width: "160px" } content: "component" }
+          div { style { font-family: "monospace" color: "#6b7280" } content: "[export] component Name { ... }" }
+        }
+      }
+
       // Compilation
-      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "0 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "6. Compilation Model" }
+      h2 { style { font-size: "24px" font-weight: "700" color: "#111827" margin: "0 0 16px" border-bottom: "2px solid #e5e7eb" padding-bottom: "8px" } content: "7. Compilation Model" }
       div {
         style { display: "flex" flex-direction: "column" gap: "8px" margin-bottom: "32px" }
         div { style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "12px 16px" font-size: "14px" }

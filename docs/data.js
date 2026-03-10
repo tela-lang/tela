@@ -22,6 +22,9 @@ tela compile MyComponent.tela --global
 # Compile all .tela files in a directory
 tela compile-all src/components/ --global
 
+# Start dev server with live reload (default port 3000)
+tela dev src/components/ --global
+
 # Or without global install:
 npx @tela-lang/tela compile-all src/components/ --global`,
 
@@ -537,7 +540,23 @@ city = user?.address?.city ?? "Unknown city"`,
   }
 }`,
 
-  langSpecKeywords: `component  prop      state     route
+  routingParamsCode: `component App {
+  route path: String
+  route params: Object
+
+  view {
+    div {
+      switch (path) {
+        case "/":           Home {}
+        case "/users":      UserList {}
+        case "/users/:id":  UserDetail { id: params.id }
+        default:            NotFound {}
+      }
+    }
+  }
+}`,
+
+  langSpecKeywords: `component  prop      state     route     store
 function   async     return    await
 if         else      for       in
 while      break     continue
@@ -607,4 +626,78 @@ public String index() {
   <script>Tela.render(App, document.getElementById('app'));</script>
 </body>
 </html>`,
+
+  // Global Store
+  storeBasicCode: `store AppStore {
+  count: Number = 0
+  user:  Object = null
+}
+
+component Counter {
+  function increment() {
+    AppStore.count = AppStore.count + 1
+  }
+
+  view {
+    div {
+      p { content: "Count: \${AppStore.count}" }
+      button { content: "+" @click: increment }
+    }
+  }
+}`,
+
+  storeExportCode: `// theme.tela
+export store ThemeStore {
+  mode: String = "light"
+}
+
+// App.tela
+import ThemeStore from "./theme"
+
+component App {
+  function toggleTheme() {
+    ThemeStore.mode = ThemeStore.mode === "light" ? "dark" : "light"
+  }
+
+  view {
+    div {
+      button { content: "Toggle theme" @click: toggleTheme }
+      p { content: "Current theme: \${ThemeStore.mode}" }
+    }
+  }
+}`,
+
+  storeMultiComponent: `store CartStore {
+  items: Array = []
+  total: Number = 0
+}
+
+component AddToCart {
+  prop item: Object
+
+  function add() {
+    CartStore.items = CartStore.items.concat([item])
+    CartStore.total = CartStore.total + item.price
+  }
+
+  view {
+    button { content: "Add to cart" @click: add }
+  }
+}
+
+component CartBadge {
+  view {
+    span { content: "\${CartStore.items.length} items · $\${CartStore.total}" }
+  }
+}`,
+
+  // Dev Server
+  devServerCode: `# Start dev server — watches components/, serves from current dir
+tela dev components/ --global
+
+# Custom port
+tela dev components/ --port 8080 --global
+
+# Specify root directory to serve
+tela dev components/ --root . --port 3000 --global`,
 };

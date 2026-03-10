@@ -1,0 +1,129 @@
+component GlobalStore {
+  state storeBasicCode: String = ""
+  state storeExportCode: String = ""
+  state storeMultiCode: String = ""
+
+  onMount {
+    storeBasicCode = window.TELA_DOCS.storeBasicCode
+    storeExportCode = window.TELA_DOCS.storeExportCode
+    storeMultiCode = window.TELA_DOCS.storeMultiComponent
+  }
+
+  view {
+    div {
+      h1 {
+        style { font-size: "36px" font-weight: "800" color: "#111827" margin: "0 0 8px" }
+        content: "Global Store"
+      }
+      div {
+        style { width: "48px" height: "4px" background: "#34786e" border-radius: "2px" margin-bottom: "24px" }
+        content: ""
+      }
+      p {
+        style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "24px" }
+        content: "The store keyword declares shared reactive state that lives outside any component. Any component in the same file — or any file that imports it — can read and write to it directly."
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Basic example"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Declare a store at the top of a .tela file, then reference its fields in any component. The compiler auto-wires subscriptions."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${storeBasicCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 16px" }
+        content: "How it works"
+      }
+      div {
+        style { display: "flex" flex-direction: "column" gap: "12px" margin-bottom: "32px" }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" display: "flex" gap: "16px" align-items: "start" }
+          div {
+            style { background: "#34786e" color: "white" border-radius: "50%" width: "28px" height: "28px" display: "flex" align-items: "center" justify-content: "center" font-size: "13px" font-weight: "700" flex-shrink: 0 }
+            content: "1"
+          }
+          div {
+            div { style { font-weight: "700" color: "#374151" font-size: "14px" margin-bottom: "2px" } content: "Shared across components" }
+            div { style { color: "#6b7280" font-size: "14px" } content: "Any component that reads or writes a store field is automatically subscribed. You never pass the store as a prop." }
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" display: "flex" gap: "16px" align-items: "start" }
+          div {
+            style { background: "#34786e" color: "white" border-radius: "50%" width: "28px" height: "28px" display: "flex" align-items: "center" justify-content: "center" font-size: "13px" font-weight: "700" flex-shrink: 0 }
+            content: "2"
+          }
+          div {
+            div { style { font-weight: "700" color: "#374151" font-size: "14px" margin-bottom: "2px" } content: "Auto-subscribed by the compiler" }
+            div { style { color: "#6b7280" font-size: "14px" } content: "The compiler scans each component for store references and emits Tela.subscribeStore() in setup and Tela.unsubscribeStore() in onDestroy. No manual wiring." }
+          }
+        }
+        div {
+          style { background: "white" border: "1px solid #e5e7eb" border-radius: "8px" padding: "16px 20px" display: "flex" gap: "16px" align-items: "start" }
+          div {
+            style { background: "#34786e" color: "white" border-radius: "50%" width: "28px" height: "28px" display: "flex" align-items: "center" justify-content: "center" font-size: "13px" font-weight: "700" flex-shrink: 0 }
+            content: "3"
+          }
+          div {
+            div { style { font-weight: "700" color: "#374151" font-size: "14px" margin-bottom: "2px" } content: "Batched updates" }
+            div { style { color: "#6b7280" font-size: "14px" } content: "Multiple writes to the same store in one event handler fire only one re-render pass across all subscribing components, via a microtask flush." }
+          }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Multiple components sharing a store"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "All subscribing components re-render whenever the store changes. Here, CartBadge and AddToCart both react to CartStore without any prop drilling."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${storeMultiCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Exporting a store"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Prefix with export to make a store importable from other files, the same way you export a component."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${storeExportCode}" }
+        }
+      }
+
+      div {
+        style { background: "#f0fdf4" border: "1px solid #bbf7d0" border-radius: "8px" padding: "16px 20px" }
+        div {
+          style { font-weight: "700" color: "#166534" margin-bottom: "4px" font-size: "14px" }
+          content: "Writing to a store"
+        }
+        div {
+          style { color: "#15803d" font-size: "14px" line-height: "1.6" }
+          content: "Store fields are written as plain member assignment: AppStore.count = AppStore.count + 1. No setter methods or dispatch functions needed."
+        }
+      }
+    }
+  }
+}

@@ -26,6 +26,8 @@
 - **Scoped CSS** — styles compile to unique class names with zero bleed between components
 - **Tiny runtime** — ~10KB, zero dependencies, ships as a UMD bundle
 - **Backend-agnostic** — works with Spring Boot, Express, Flask, or plain static files
+- **Global store** — `store` keyword declares shared reactive state; the compiler auto-subscribes components that reference it
+- **Live-reload dev server** — `tela dev` compiles, serves, and live-reloads on every `.tela` save
 - **Zero config** — no webpack, no bundler; just compile and drop a `<script>` tag
 
 ---
@@ -141,12 +143,15 @@ npx @tela-lang/tela compile MyApp.tela
 | `tela init [name]` | Scaffold a new project with a starter component |
 | `tela compile <file.tela>` | Compile a single component to `.js` + `.css` |
 | `tela compile-all <dir>` | Compile every `.tela` file in a directory |
+| `tela dev [dir]` | Start a live-reload dev server; watches `.tela` files and recompiles on every save |
 
 **Options**
 
 | Flag | Description |
 |---|---|
 | `--global` | Expose the component on `window` (required for plain `<script>` use) |
+| `--port <n>` | Port for `tela dev` (default: `3000`) |
+| `--root <dir>` | Directory to serve with `tela dev` (default: current directory) |
 
 ---
 
@@ -237,7 +242,8 @@ component UserDashboard {
 | `state name: Type = value` | Reactive local state |
 | `prop name: Type` | Input from parent |
 | `computed name = expr` | Derived value, auto-updates |
-| `route path: String` | Reactive URL variable for client-side routing |
+| `route path: String` | Reactive URL variable for client-side routing; add a second `route params: Object` to capture named URL segments (e.g. `/users/:id` → `params.id`) |
+| `store Name { field: Type = value }` | Shared reactive state across components |
 | `enum Name { A B C }` | Compile-time constant set |
 | `model Name { field: Type }` | Data-shape factory |
 | `onMount / onUpdate / onDestroy { }` | Lifecycle hooks |

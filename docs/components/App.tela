@@ -151,9 +151,11 @@ component App {
               case "async-data":       AsyncData {}
               case "null-safety":      NullSafety {}
               case "routing":          Routing {}
+              case "global-store":     GlobalStore {}
               case "child-components": ChildComponents {}
               case "lifecycle":        Lifecycle {}
               case "spring-boot":      SpringBoot {}
+              case "dev-server":       DevServer {}
               case "language-spec":    LanguageSpec {}
               default:                 Introduction {}
             }

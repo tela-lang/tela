@@ -1,10 +1,12 @@
 component Routing {
   state routingCode: String = ""
+  state routingParamsCode: String = ""
   state routingCustomNavigateCode: String = ""
   state routingJavaCode: String = ""
 
   onMount {
     routingCode = window.TELA_DOCS.routingCode
+    routingParamsCode = window.TELA_DOCS.routingParamsCode
     routingCustomNavigateCode = window.TELA_DOCS.routingCustomNavigateCode
     routingJavaCode = window.TELA_DOCS.routingJavaCode
   }
@@ -37,6 +39,22 @@ component Routing {
         pre {
           style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
           code { class: "language-tela" content: "${routingCode}" }
+        }
+      }
+
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 12px" }
+        content: "Route parameters"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Add a second route params: Object declaration to capture named URL segments. The compiler extracts the patterns from your switch cases and matches them at runtime."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 32px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${routingParamsCode}" }
         }
       }
 
@@ -117,11 +135,11 @@ component Routing {
         style { background: "#fef3c7" border: "1px solid #fde68a" border-radius: "8px" padding: "16px 20px" }
         div {
           style { font-weight: "700" color: "#92400e" margin-bottom: "4px" font-size: "14px" }
-          content: "One route per component"
+          content: "At most two route declarations"
         }
         div {
           style { color: "#b45309" font-size: "14px" line-height: "1.6" }
-          content: "A component may declare at most one route variable. Route is designed for top-level application shell components."
+          content: "A component may declare at most two route variables: one String for the matched path pattern, and one Object for URL parameters. Route is intended for top-level app shell components."
         }
       }
     }

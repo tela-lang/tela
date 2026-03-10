@@ -16,6 +16,8 @@ const GettingStarted = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_GettingStarted.installCode = window.TELA_DOCS.installCode;
       state_GettingStarted.cliCode = window.TELA_DOCS.cliCode;
