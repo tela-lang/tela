@@ -117,6 +117,19 @@ if (command === 'compile') {
   console.log('    Place .tela files in your static/components/ directory');
   console.log('    Run: npx tela compile-all static/components/ --global\n');
 
+} else if (command === 'dev') {
+  const { startDevServer } = require('../src/dev-server');
+
+  // Parse: tela dev [components-dir] [--root dir] [--port N] [--global]
+  const componentsDir = (args[1] && !args[1].startsWith('--')) ? args[1] : 'components';
+  const rootIdx  = args.indexOf('--root');
+  const portIdx  = args.indexOf('--port');
+  const rootDir  = rootIdx !== -1 ? args[rootIdx + 1] : '.';
+  const port     = portIdx !== -1 ? parseInt(args[portIdx + 1], 10) : 3000;
+  const useGlobal = args.includes('--global');
+
+  startDevServer({ componentsDir, rootDir, port, useGlobal });
+
 } else if (command === '--version' || command === '-v') {
   console.log(`tela v${VERSION}`);
 
@@ -126,13 +139,18 @@ if (command === 'compile') {
   console.log('    tela init [project-name]        Scaffold a new Tela project');
   console.log('    tela compile <file.tela>         Compile a single component');
   console.log('    tela compile-all <dir>           Compile all .tela files in a directory');
+  console.log('    tela dev [components-dir]        Start dev server with live reload');
   console.log('    tela --version                   Print version\n');
   console.log('  Options:\n');
-  console.log('    --global    Expose compiled components on window (for plain HTML use)\n');
-  console.log('  Examples:\n');
+  console.log('    --global        Expose compiled components on window (for plain HTML use)');
+  console.log('    --port <n>      Dev server port (default: 3000)');
+  console.log('    --root <dir>    Root directory to serve (default: .)');
+  console.log('\n  Examples:\n');
   console.log('    tela init my-app');
   console.log('    tela compile src/App.tela --global');
-  console.log('    tela compile-all src/components/ --global\n');
+  console.log('    tela compile-all src/components/ --global');
+  console.log('    tela dev components/ --global');
+  console.log('    tela dev components/ --port 8080 --root . --global\n');
   console.log('  Runtime CDN:\n');
   console.log('    <script src="https://unpkg.com/@tela-lang/tela@latest/dist/runtime.umd.js"></script>\n');
 }
