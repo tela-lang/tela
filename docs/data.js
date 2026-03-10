@@ -403,7 +403,7 @@ component PetBadge {
       case PetType.BIRD:
         span { style { background: "#34d399" } content: "🦜 Bird" }
       default:
-        span { style { background: "#9ca3af" } content: "${type}" }
+        span { style { background: "#9ca3af" } content: "\${type}" }
     }
   }
 }`,
@@ -535,6 +535,23 @@ city = user?.address?.city ?? "Unknown city"`,
       }
     }
   }
+}`,
+
+  langSpecKeywords: `component  prop      state     route
+function   async     return    await
+if         else      for       in
+while      break     continue
+switch     case      default
+try        catch     finally   throw
+enum       model
+computed   watch     emit
+import     from      export
+onMount    onUpdate  onDestroy
+view       style     bind`,
+
+  routingJavaCode: `@GetMapping({"/", "/about", "/blog"})
+public String index() {
+    return "index";
 }`,
 
   routingCustomNavigateCode: `component App {

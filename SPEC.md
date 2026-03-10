@@ -49,17 +49,24 @@ Whitespace (spaces, tabs, newlines) is insignificant between tokens. Newlines ar
 
 ### Keywords
 
+The following identifiers are reserved:
+
 ```
-component  prop    state   route
-function   async   return  await
-if         else    for     in
-while      break   continue
-switch     case    default
-try        catch   finally throw
+component  prop      state     route
+function   async     return    await
+if         else      for       in
+while      break     continue
+switch     case      default
+try        catch     finally   throw
 enum       model
+computed   watch     emit
+import     from      export
 onMount    onUpdate  onDestroy
-view       style   bind    class
+view       style     bind
+true       false     null
 ```
+
+> **Note:** `class` is **not** a reserved keyword. When written as an element attribute (`class: "my-class"`), it is parsed as an ordinary attribute name.
 
 ### Identifiers
 
@@ -82,27 +89,23 @@ identifier ::= [a-zA-Z_][a-zA-Z0-9_]*
 
 ### Template strings
 
-Template interpolation uses `${expr}` inside a double-quoted string. Inside `.tela` source the `$` must be escaped with `\` in JS-string contexts (data.js), but in the compiled output the `$` is literal.
+Template interpolation uses `${expr}` inside a double-quoted string:
 
 ```
 "Hello, ${name}!"
 ```
 
+State variables inside `${}` are automatically rewritten to their reactive accessor at compile time (e.g. `${count}` becomes `${state_Counter.count}` in the generated JS).
+
 ### Operators
 
 ```
 +  -  *  /  %
-==  !=  <  >  <=  >=
+===  !==  ==  !=  <  >  <=  >=
 &&  ||  ??
 !
 =
-?.  .
-```
-
-### Punctuation
-
-```
-( )  [ ]  { }  ,  :  ;
+?.  .  ?.[]
 ```
 
 ---
@@ -113,10 +116,32 @@ A Tela source file consists of zero or more **top-level declarations** followed 
 
 ### Top-level declarations
 
-| Declaration | Syntax                           | Purpose                             |
-|-------------|----------------------------------|-------------------------------------|
-| `enum`      | `enum Name { VAL1 VAL2 ... }`    | Compile-time constant set           |
-| `model`     | `model Name { f1: T f2: T ... }` | Data-shape factory function         |
+| Declaration | Syntax                              | Exportable | Purpose                             |
+|-------------|-------------------------------------|------------|-------------------------------------|
+| `import`    | `import Name from "path"`           | —          | Import a component from another file |
+| `enum`      | `enum Name { VAL1 VAL2 ... }`       | Yes        | Compile-time constant set           |
+| `model`     | `model Name { f1: T f2: T ... }`    | Yes        | Data-shape factory function         |
+
+Prefix any declaration with `export` to make it available for import by other files:
+
+```tela
+export enum Status { ACTIVE INACTIVE }
+export model User { name: String email: String }
+```
+
+A component can also be exported:
+
+```tela
+export component Badge { ... }
+```
+
+### Import syntax
+
+```tela
+import MyComponent from "./components/MyComponent"
+```
+
+The imported name is then available as a child component in the `view` block.
 
 ### Component declaration
 
@@ -128,14 +153,16 @@ component Name {
 
 A component has the following members, in any order (but conventionally in the order listed):
 
-| Member            | Syntax                              |
-|-------------------|-------------------------------------|
-| Route declaration | `route varName: Type`               |
-| State declaration | `state varName: Type = expr`        |
-| Prop declaration  | `prop varName: Type`                |
-| Function          | `[async] function name(params) { }` |
-| Lifecycle hook    | `onMount { }` / `onUpdate { }` / `onDestroy { }` |
-| View block        | `view { <element> }`                |
+| Member            | Syntax                                | Purpose                                      |
+|-------------------|---------------------------------------|----------------------------------------------|
+| Route declaration | `route varName: Type`                 | Reactive URL-path variable                   |
+| State declaration | `state varName: Type = expr`          | Local reactive state                         |
+| Prop declaration  | `prop varName: Type`                  | Value passed in by the parent                |
+| Computed property | `computed varName = expr`             | Derived value, re-evaluated on state change  |
+| Watcher           | `watch varName { stmts }`             | Side-effect block run when state var changes |
+| Function          | `[async] function name(params) { }`   | Callable logic                               |
+| Lifecycle hook    | `onMount / onUpdate / onDestroy { }`  | Lifecycle callbacks                          |
+| View block        | `view { <element> }`                  | Rendered output                              |
 
 ---
 
@@ -160,40 +187,38 @@ Custom model names may be used where `Object` would appear.
 
 ### Precedence table (highest to lowest)
 
-| Level | Operators / Forms                  | Associativity |
-|-------|------------------------------------|---------------|
-| 12    | Primary: literals, identifiers, `(expr)`, `[arr]`, `{obj}` | — |
-| 11    | Member access: `a.b`, `a[b]`, optional chain `a?.b` | left |
-| 11    | Call: `f(args...)`, `a?.method(args)` | left |
-| 10    | Unary: `!`, `-`                    | right |
-| 9     | `*` `/` `%`                        | left |
-| 8     | `+` `-`                            | left |
-| 7     | `<` `>` `<=` `>=`                  | left |
-| 6     | `==` `!=`                          | left |
-| 5     | `&&`                               | left |
-| 4     | `\|\|`                               | left |
-| 3     | Ternary: `cond ? then : else`      | right |
-| 1     | `??` (null coalescing)             | left |
+| Level | Operators / Forms                                                | Associativity |
+|-------|------------------------------------------------------------------|---------------|
+| 7     | `*` `/` `%`                                                      | left          |
+| 6     | `+` `-`                                                          | left          |
+| 5     | `<` `>` `<=` `>=`                                                | left          |
+| 4     | `===` `!==` `==` `!=`                                            | left          |
+| 3     | `&&`                                                             | left          |
+| 2     | `\|\|`                                                             | left          |
+| 1     | `??` (null coalescing)                                           | left          |
+| 0     | `cond ? then : else` (ternary — lowest of all binary operators)  | right         |
+
+> Primary expressions (literals, identifiers, calls, member access, unary `!`/`-`) bind tighter than all binary operators and are parsed first regardless of the table above.
 
 ### Optional chaining (`?.`)
 
 ```tela
-user?.address?.city     // null if user or address is null/undefined
-users?.[0]              // null if users is null/undefined
+user?.address?.city     // undefined if user or address is null/undefined
+users?.[0]              // undefined if users is null/undefined
 ```
 
 ### Null coalescing (`??`)
 
-Returns the left operand when it is not `null` or `undefined`; otherwise returns the right operand.
+Returns the left operand when it is not `null` or `undefined`; otherwise returns the right operand. Binds above the ternary operator.
 
 ```tela
 name ?? "Anonymous"     // "Anonymous" only when name is null or undefined
 ```
 
-To handle empty strings use `||`:
+To handle empty strings as well, use `||`:
 
 ```tela
-name || "Anonymous"     // "Anonymous" when name is falsy (null, undefined, "")
+name || "Anonymous"     // "Anonymous" when name is any falsy value
 ```
 
 ### Template strings
@@ -202,7 +227,7 @@ name || "Anonymous"     // "Anonymous" when name is falsy (null, undefined, "")
 "Hello, ${firstName} ${lastName}!"
 ```
 
-Template strings are evaluated at render time. Any expression may appear inside `${}`.
+Any expression may appear inside `${}`.
 
 ### Object and array literals
 
@@ -214,6 +239,8 @@ Template strings are evaluated at render time. Any expression may appear inside 
 ---
 
 ## Statements
+
+The following statement forms are valid inside function bodies, lifecycle hooks, and watcher bodies.
 
 ### Assignment
 
@@ -235,6 +262,28 @@ functionName(arg1, arg2)
 return expr
 return          // equivalent to return null
 ```
+
+### Await
+
+`await` is valid only inside an `async function`.
+
+```tela
+async function loadData() {
+  response = await fetch("/api/data")
+  data = await response.json()
+}
+```
+
+### Emit
+
+`emit` triggers a custom event, calling the corresponding prop passed in by the parent.
+
+```tela
+emit valueChange(newValue)
+// Compiles to: instance.props.onValueChange?.(newValue)
+```
+
+The parent wires the handler with `@valueChange: myHandler` on the child component tag.
 
 ### If / else
 
@@ -261,7 +310,7 @@ switch (expr) {
 }
 ```
 
-No fall-through. Each `case` body is a single statement (use a block `{ }` for multiple).
+No fall-through. Each `case` body may contain **multiple statements**. Wrap with `{ }` only when needed for nested blocks; the `break` is injected automatically by the compiler.
 
 ### While
 
@@ -271,7 +320,7 @@ while (condition) {
 }
 ```
 
-### For-in (range over array)
+### For-in (iterate over array values)
 
 ```tela
 for (item in collection) {
@@ -279,7 +328,7 @@ for (item in collection) {
 }
 ```
 
-Iterates over array elements. `item` is a new binding per iteration.
+Iterates over array **element values** (equivalent to JavaScript's `for...of`). `item` is a new binding scoped to each iteration. This is **not** JavaScript's `for...in` which iterates over keys.
 
 ### For (C-style)
 
@@ -289,7 +338,7 @@ for (i = 0; i < n; i = i + 1) {
 }
 ```
 
-The initialiser, condition, and update are all expressions.
+The compiler declares `i` with `let`. The init and update must be simple assignments to a single identifier.
 
 ### Break and Continue
 
@@ -307,24 +356,13 @@ try {
 }
 ```
 
-`catch` and `finally` are both optional (but at least one must be present).
+Both `catch` and `finally` are optional but at least one must be present.
 
 ### Throw
 
 ```tela
 throw "Something went wrong"
 throw new Error("message")
-```
-
-### Await
-
-`await` is valid only inside an `async function`.
-
-```tela
-async function loadData() {
-  response = await fetch("/api/data")
-  data = await response.json()
-}
 ```
 
 ---
@@ -346,15 +384,17 @@ HTML elements use lowercase names (`div`, `p`, `button`, …). Child components 
 
 ### Attributes
 
-| Attribute form       | Compiled output                              |
-|----------------------|----------------------------------------------|
-| `content: expr`      | Sets `element.textContent`                   |
-| `attr: expr`         | Sets HTML attribute (e.g. `href`, `src`)     |
-| `bind value: var`    | Two-way binding — sets value and listens to `input` event |
-| `class: expr`        | Sets `className`                             |
-| `@click: handler`    | `addEventListener('click', ...)`             |
-| `@input: handler`    | `addEventListener('input', ...)`             |
-| `style { ... }`      | See [Style Syntax](#style-syntax)            |
+| Attribute form       | Compiled output                                                  |
+|----------------------|------------------------------------------------------------------|
+| `content: expr`      | Sets `element.textContent`                                       |
+| `attrName: expr`     | Sets HTML attribute (e.g. `href`, `src`, `class`, `placeholder`) |
+| `bind value: var`    | Two-way binding — reads and writes `var`; listens to `input` event |
+| `bind attr: var`     | Two-way binding on any attribute name                            |
+| `@click: handler`    | `addEventListener('click', ...)`                                 |
+| `@input: handler`    | `addEventListener('input', ...)`                                 |
+| `style { ... }`      | See [Style Syntax](#style-syntax)                                |
+
+> `class` is an ordinary attribute name, not a keyword. Use `class: "my-css-class"` to apply external CSS classes (e.g. from Highlight.js or a global stylesheet). Tela's own scoped styles are applied automatically by the compiler.
 
 ### Control flow in view
 
@@ -389,7 +429,7 @@ switch (value) {
 }
 ```
 
-In view context, each case renders its child element/component. Only the matching branch is rendered.
+In view context, each case renders its child element or component. Only the matching branch is rendered.
 
 ### Child component instantiation
 
@@ -397,7 +437,7 @@ In view context, each case renders its child element/component. Only the matchin
 MyComponent { propA: expr propB: expr }
 ```
 
-Props are passed by name. Functions can be passed as props.
+Props are passed by name. Functions and callbacks can be passed as props. Custom events are wired with `@eventName: handler`.
 
 ---
 
@@ -418,16 +458,22 @@ div {
 
 ### Property value resolution
 
-| Value form              | Compiled output                |
-|-------------------------|--------------------------------|
-| String literal `"..."`  | Static CSS in stylesheet       |
-| Number literal `42`     | Static CSS (unitless number)   |
-| State/prop variable     | Inline style (reactive)        |
-| Ternary expression      | Inline style (reactive)        |
+| Value form              | Compiled output                   |
+|-------------------------|-----------------------------------|
+| String literal `"..."`  | Static CSS rule in stylesheet      |
+| Number literal `42`     | Static CSS (unitless number)       |
+| State/prop variable     | Inline style (reactive)            |
+| Ternary expression      | Inline style (reactive)            |
 
 ### Scoping
 
-All CSS rules are scoped by a generated class name unique to the component (e.g. `.App-x7f3`). Child component trees are not affected.
+Each element that has a `style` block is assigned a unique scoped class name of the form:
+
+```
+tela-ComponentName-tagName-index
+```
+
+For example: `tela-Counter-button-3`. This class is added to the element automatically; you do not write it yourself.
 
 ### Media queries
 
@@ -440,7 +486,7 @@ style {
 }
 ```
 
-Media queries may appear inside `style` blocks. They compile to proper `@media` rules in the CSS file.
+Media queries compile to proper `@media` rules in the CSS file.
 
 ---
 
@@ -464,10 +510,10 @@ component App {
 
 ### Semantics
 
-- The `route` variable is initialised to `window.location.pathname` at mount time.
-- The compiler injects a `navigate(dest)` helper function (unless the developer defines their own). Calling `navigate("/about")` calls `history.pushState` and updates the route variable.
-- A `popstate` listener is registered so the browser back/forward buttons update the route variable.
-- The listener is removed during `onDestroy`.
+- The route variable is initialised to `window.location.pathname` at mount time.
+- The compiler auto-injects a `navigate(dest)` helper (unless the developer defines their own). Calling `navigate("/about")` calls `history.pushState` and updates the route variable, triggering a re-render.
+- A named `popstate` listener is registered so the browser back/forward buttons update the route variable.
+- The listener is removed during `onDestroy` via a generated cleanup function.
 
 ### `navigate` function
 
@@ -479,7 +525,7 @@ If the component defines its own `function navigate(...)`, the compiler-injected
 
 ### SPA server fallback
 
-For deep-link support, the server must return `index.html` for all application routes. In Spring Boot:
+For deep-link support, the server must return `index.html` for all client-side routes. In Spring Boot:
 
 ```java
 @GetMapping({"/", "/home", "/about"})
@@ -509,70 +555,95 @@ Source (.tela)
 
 ### Generated JavaScript
 
-Each component compiles to a factory function exposed on `window`:
+Each component compiles to a factory function registered on `window`:
 
 ```js
-window.App = (props) => {
-  // State object (Proxy-based for reactivity)
-  const state_App = new Proxy({ count: 0, ... }, handler);
+const Counter = Tela.defineComponent({
+  name: 'Counter',
+  setup(instance) {
+    // State proxy
+    const state_Counter = Tela.reactive({ count: 0 }, instance.update, {
+      // watchers (if any)
+    });
 
-  // Compiled functions
-  function increment() { state_App.count = state_App.count + 1; }
+    // Computed properties (if any)
+    const computed_Counter = {
+      get doubled() { return state_Counter.count * 2; }
+    };
 
-  // Lifecycle
-  instance.onMount = () => { ... };
+    // Functions
+    const increment = () => { state_Counter.count = state_Counter.count + 1; };
 
-  // View: returns array of DOM node factories
-  instance.render = () => [
-    Tela.el('div', { ... }, [
-      Tela.el('button', { onclick: increment }, ['Click me'])
-    ])
-  ];
+    // Lifecycle hooks set on instance
+    instance.onMount = () => { ... };
 
-  return instance;
-};
+    // Render function
+    return () => Tela.element('div', { ... }, [...]);
+  }
+});
+window.Counter = Counter;
 ```
+
+### State variable rewriting
+
+Inside template strings and expressions, bare state variable names are rewritten to their `state_ComponentName.varName` form. For example, `${count}` in a `content:` string compiles to `` `${state_Counter.count}` `` in the output.
 
 ### Generated CSS
 
-All `style` blocks compile to a single `.css` file. Literal values become static rules; state-dependent values are skipped (applied as inline styles at runtime).
+All `style` blocks compile to a single `.css` file. Literal values become static rules; state-dependent values are applied as inline styles at runtime.
 
 ```css
-.App-x7f3-1 {
-  background: #ffffff;
-  padding: 16px 24px;
+.tela-Counter-button-3 {
+  background: #34786e;
+  padding: 8px 20px;
 }
 ```
 
 ### Scoped class names
 
-Each element with a `style` block receives a unique class of the form `ComponentName-hash-index`. These are deterministic across recompiles for the same source.
+Each element with a `style` block receives a unique class of the form `tela-ComponentName-tagName-index` (e.g. `tela-App-div-0`). The index is a simple global counter incremented during compilation — not a hash.
 
 ### Reactivity
 
-State is wrapped in a JavaScript `Proxy`. Any write to a state variable (`state_Comp.x = val`) triggers `instance.update()`, which re-runs `render()` and reconciles the DOM.
+State is wrapped in a JavaScript `Proxy`. Any write to a state variable (`state_Comp.x = val`) triggers `instance.update()`, which re-runs the render function and reconciles the DOM.
+
+### Computed properties
+
+```tela
+computed doubled = count * 2
+```
+
+Compiles to a getter on a `computed_ComponentName` object. Changes to any state variable referenced in the expression cause the getter to return a fresh value on the next render.
+
+### Watchers
+
+```tela
+watch count {
+  console.log("count changed to", count)
+}
+```
+
+Compiles to a watcher entry passed to `Tela.reactive`. The body runs whenever the watched variable is assigned.
 
 ---
 
 ## Built-in Globals
 
-The following are available inside any component without import:
+The following are available inside any Tela component. Standard browser APIs (`window`, `document`, `fetch`, etc.) are available because Tela targets the browser — they are not injected by the compiler. Only `navigate` is compiler-injected.
 
-| Name                        | Type       | Description                                     |
-|-----------------------------|------------|-------------------------------------------------|
-| `navigate(path)`            | Function   | Client-side navigation (injected for `route` components) |
-| `window`                    | Object     | Browser `window` object                         |
-| `document`                  | Object     | Browser `document` object                       |
-| `console`                   | Object     | Browser `console` object                        |
-| `fetch(url, opts?)`         | Function   | Browser Fetch API                               |
-| `JSON.stringify(val)`       | Function   | Serialize value to JSON string                  |
-| `JSON.parse(str)`           | Function   | Parse JSON string                               |
-| `Object.freeze(obj)`        | Function   | Freeze object (used internally by `enum`)       |
-| `setTimeout(fn, ms)`        | Function   | Browser timer                                   |
-| `setInterval(fn, ms)`       | Function   | Browser repeating timer                         |
-| `clearTimeout(id)`          | Function   | Cancel timer                                    |
-| `clearInterval(id)`         | Function   | Cancel repeating timer                          |
+| Name                        | Source              | Description                                     |
+|-----------------------------|---------------------|-------------------------------------------------|
+| `navigate(path)`            | Compiler-injected   | Client-side navigation (only when `route` is declared; suppressed if developer defines their own) |
+| `window`                    | Browser             | Global browser object                           |
+| `document`                  | Browser             | DOM document                                    |
+| `console`                   | Browser             | Console API                                     |
+| `fetch(url, opts?)`         | Browser             | Fetch API                                       |
+| `JSON.stringify(val)`       | Browser             | Serialize to JSON                               |
+| `JSON.parse(str)`           | Browser             | Parse JSON                                      |
+| `Object.freeze(obj)`        | Browser             | Freeze object (used internally by compiled `enum`) |
+| `setTimeout / clearTimeout` | Browser             | Timer APIs                                      |
+| `setInterval / clearInterval` | Browser           | Interval APIs                                   |
 
 ---
 
-*This specification is a living document. It will be updated as the language evolves.*
+*This specification is a living document and will be updated as the language evolves.*

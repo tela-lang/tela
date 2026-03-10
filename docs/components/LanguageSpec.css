@@ -2,11 +2,11 @@
 .tela-LanguageSpec-div-1 { width: 48px; height: 4px; background: #34786e; border-radius: 2px; margin-bottom: 24px }
 .tela-LanguageSpec-p-2 { font-size: 18px; color: #4b5563; line-height: 1.8; margin-bottom: 32px }
 .tela-LanguageSpec-h2-3 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
-.tela-LanguageSpec-h3-4 { font-size: 18px; font-weight: 700; color: #374151; margin: 20px 0 8px }
-.tela-LanguageSpec-div-5 { background: #1a1a2e; border-radius: 8px; padding: 16px 24px; margin: 0 0 16px; overflow: auto }
+.tela-LanguageSpec-p-4 { font-size: 14px; color: #6b7280; margin: 0 0 12px }
+.tela-LanguageSpec-div-5 { background: #1a1a2e; border-radius: 8px; padding: 16px 24px; margin: 0 0 32px; overflow: auto }
 .tela-LanguageSpec-pre-6 { margin: 0; font-family: JetBrains Mono, Consolas, monospace; font-size: 13px; color: #e2e8f0; white-space: pre }
-.tela-LanguageSpec-h3-7 { font-size: 18px; font-weight: 700; color: #374151; margin: 20px 0 8px }
-.tela-LanguageSpec-div-8 { display: grid; grid-template-columns: 1fr 2fr; gap: 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 14px }
+.tela-LanguageSpec-h2-7 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
+.tela-LanguageSpec-div-8 { display: grid; grid-template-columns: 1fr 2fr; gap: 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 14px; margin-bottom: 32px }
 .tela-LanguageSpec-div-9 { background: #f9fafb; padding: 8px 16px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb }
 .tela-LanguageSpec-div-10 { background: #f9fafb; padding: 8px 16px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
 .tela-LanguageSpec-div-11 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb }
@@ -21,117 +21,108 @@
 .tela-LanguageSpec-div-20 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
 .tela-LanguageSpec-div-21 { padding: 8px 16px }
 .tela-LanguageSpec-div-22 { padding: 8px 16px; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-h2-23 { font-size: 24px; font-weight: 700; color: #111827; margin: 40px 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
-.tela-LanguageSpec-div-24 { display: grid; grid-template-columns: 60px 1fr 120px; gap: 0; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; font-size: 14px }
-.tela-LanguageSpec-div-25 { background: #f9fafb; padding: 8px 16px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-26 { background: #f9fafb; padding: 8px 16px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-27 { background: #f9fafb; padding: 8px 16px; font-weight: 700; color: #374151; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-28 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-29 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-30 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-31 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-32 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-33 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-34 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-35 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-36 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-37 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-38 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-39 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-40 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-41 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-42 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-43 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-44 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-45 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-46 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-47 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-48 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-49 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-50 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-51 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-52 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-53 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-54 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-55 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-56 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-57 { padding: 8px 16px; border-bottom: 1px solid #e5e7eb; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-div-58 { padding: 8px 16px; text-align: center; font-weight: 600 }
-.tela-LanguageSpec-div-59 { padding: 8px 16px; border-left: 1px solid #e5e7eb; font-family: monospace }
-.tela-LanguageSpec-div-60 { padding: 8px 16px; border-left: 1px solid #e5e7eb }
-.tela-LanguageSpec-h2-61 { font-size: 24px; font-weight: 700; color: #111827; margin: 40px 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
-.tela-LanguageSpec-div-62 { display: flex; flex-direction: column; gap: 8px }
-.tela-LanguageSpec-div-63 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-64 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-65 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-66 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-67 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-68 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-69 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-70 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-71 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-72 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-73 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-74 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-75 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-76 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-77 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-78 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-79 { font-weight: 700; color: #374151; min-width: 140px }
-.tela-LanguageSpec-div-80 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-h2-23 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
+.tela-LanguageSpec-div-24 { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px }
+.tela-LanguageSpec-div-25 { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-26 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-27 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-28 { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-29 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-30 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-31 { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-32 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-33 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-34 { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-35 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-36 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-37 { background: white; border: 1px solid #e5e7eb; border-radius: 6px; padding: 10px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-38 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-39 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-p-40 { font-size: 13px; color: #9ca3af; margin: 0 0 32px }
+.tela-LanguageSpec-h2-41 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
+.tela-LanguageSpec-div-42 { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px }
+.tela-LanguageSpec-div-43 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-44 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-45 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-46 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-47 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-48 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-49 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-50 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-51 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-52 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-53 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-54 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-55 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-56 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-57 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-58 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-59 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-60 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-61 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-62 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-63 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-64 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-65 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-66 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-67 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-68 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-69 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-70 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-71 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-72 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-73 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-74 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-75 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-76 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-77 { font-weight: 700; color: #374151; min-width: 160px }
+.tela-LanguageSpec-div-78 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-h2-79 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
+.tela-LanguageSpec-div-80 { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px }
 .tela-LanguageSpec-div-81 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-82 { font-weight: 700; color: #374151; min-width: 140px }
+.tela-LanguageSpec-div-82 { font-weight: 700; color: #374151; min-width: 180px }
 .tela-LanguageSpec-div-83 { font-family: monospace; color: #6b7280 }
 .tela-LanguageSpec-div-84 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-85 { font-weight: 700; color: #374151; min-width: 140px }
+.tela-LanguageSpec-div-85 { font-weight: 700; color: #374151; min-width: 180px }
 .tela-LanguageSpec-div-86 { font-family: monospace; color: #6b7280 }
 .tela-LanguageSpec-div-87 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-88 { font-weight: 700; color: #374151; min-width: 140px }
+.tela-LanguageSpec-div-88 { font-weight: 700; color: #374151; min-width: 180px }
 .tela-LanguageSpec-div-89 { font-family: monospace; color: #6b7280 }
 .tela-LanguageSpec-div-90 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-91 { font-weight: 700; color: #374151; min-width: 140px }
+.tela-LanguageSpec-div-91 { font-weight: 700; color: #374151; min-width: 180px }
 .tela-LanguageSpec-div-92 { font-family: monospace; color: #6b7280 }
 .tela-LanguageSpec-div-93 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-94 { font-weight: 700; color: #374151; min-width: 140px }
+.tela-LanguageSpec-div-94 { font-weight: 700; color: #374151; min-width: 180px }
 .tela-LanguageSpec-div-95 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-h2-96 { font-size: 24px; font-weight: 700; color: #111827; margin: 40px 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
-.tela-LanguageSpec-div-97 { display: flex; flex-direction: column; gap: 8px }
-.tela-LanguageSpec-div-98 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-99 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-100 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-101 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-102 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-103 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-104 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-105 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-106 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-107 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-108 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-109 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-110 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-111 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-112 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-113 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-114 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-115 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-116 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-117 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-118 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-div-119 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
-.tela-LanguageSpec-div-120 { font-weight: 700; color: #374151; min-width: 180px }
-.tela-LanguageSpec-div-121 { font-family: monospace; color: #6b7280 }
-.tela-LanguageSpec-h2-122 { font-size: 24px; font-weight: 700; color: #111827; margin: 40px 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
-.tela-LanguageSpec-p-123 { font-size: 15px; color: #4b5563; line-height: 1.8; margin-bottom: 12px }
-.tela-LanguageSpec-div-124 { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px }
-.tela-LanguageSpec-div-125 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
-.tela-LanguageSpec-div-126 { font-weight: 700; color: #374151; margin-bottom: 4px }
-.tela-LanguageSpec-div-127 { color: #6b7280 }
-.tela-LanguageSpec-div-128 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
-.tela-LanguageSpec-div-129 { font-weight: 700; color: #374151; margin-bottom: 4px }
-.tela-LanguageSpec-div-130 { color: #6b7280 }
-.tela-LanguageSpec-div-131 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
-.tela-LanguageSpec-div-132 { font-weight: 700; color: #374151; margin-bottom: 4px }
-.tela-LanguageSpec-div-133 { color: #6b7280 }
-.tela-LanguageSpec-div-134 { background: #f8fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; text-align: center }
-.tela-LanguageSpec-p-135 { color: #6b7280; font-size: 14px; margin: 0 }
-.tela-LanguageSpec-a-136 { color: #34786e; font-size: 14px; font-weight: 600 }
+.tela-LanguageSpec-div-96 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-97 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-98 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-99 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-100 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-101 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-102 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-103 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-104 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-105 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-106 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-107 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-div-108 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px; display: flex; gap: 16px }
+.tela-LanguageSpec-div-109 { font-weight: 700; color: #374151; min-width: 180px }
+.tela-LanguageSpec-div-110 { font-family: monospace; color: #6b7280 }
+.tela-LanguageSpec-h2-111 { font-size: 24px; font-weight: 700; color: #111827; margin: 0 0 16px; border-bottom: 2px solid #e5e7eb; padding-bottom: 8px }
+.tela-LanguageSpec-div-112 { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px }
+.tela-LanguageSpec-div-113 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
+.tela-LanguageSpec-div-114 { font-weight: 700; color: #374151; margin-bottom: 4px }
+.tela-LanguageSpec-div-115 { color: #6b7280 }
+.tela-LanguageSpec-div-116 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
+.tela-LanguageSpec-div-117 { font-weight: 700; color: #374151; margin-bottom: 4px }
+.tela-LanguageSpec-div-118 { color: #6b7280 }
+.tela-LanguageSpec-div-119 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
+.tela-LanguageSpec-div-120 { font-weight: 700; color: #374151; margin-bottom: 4px }
+.tela-LanguageSpec-div-121 { color: #6b7280 }
+.tela-LanguageSpec-div-122 { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; font-size: 14px }
+.tela-LanguageSpec-div-123 { font-weight: 700; color: #374151; margin-bottom: 4px }
+.tela-LanguageSpec-div-124 { color: #6b7280 }
+.tela-LanguageSpec-div-125 { background: #f8fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px 20px; text-align: center }
+.tela-LanguageSpec-p-126 { color: #6b7280; font-size: 14px; margin: 0 0 8px }
+.tela-LanguageSpec-a-127 { color: #34786e; font-size: 14px; font-weight: 600 }
