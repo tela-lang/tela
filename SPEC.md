@@ -16,8 +16,9 @@
 7. [View Syntax](#view-syntax)
 8. [Style Syntax](#style-syntax)
 9. [Routing](#routing)
-10. [Compilation Model](#compilation-model)
-11. [Built-in Globals](#built-in-globals)
+10. [Runtime Architecture](#runtime-architecture)
+11. [Compilation Model](#compilation-model)
+12. [Built-in Globals](#built-in-globals)
 
 ---
 
@@ -536,6 +537,46 @@ public String index() { return "index"; }
 
 - A component may have at most one `route` declaration.
 - `route` is intended for top-level app shell components.
+
+---
+
+## Runtime Architecture
+
+Tela uses a **Virtual DOM with component-level re-rendering**. Understanding this model helps predict performance and debugging behavior.
+
+### Update cycle
+
+```
+state write (Proxy set trap)
+  → instance.update()                   ← synchronous, immediate
+  → render function re-runs             ← produces new vnode tree
+  → _patchChildren / _patchNode         ← diffs old vs new vnodes
+  → targeted DOM mutations              ← only changed nodes touched
+```
+
+### Granularity
+
+Re-renders are **per-component**. A state write in component A triggers a re-diff of A's subtree only. Child components are reused by identity (cursor-based positional cache); only changed props are patched through.
+
+This is the same model as React/Preact/Vue — deliberately chosen for predictability over more aggressive compile-time optimizations.
+
+### Keyed list reconciliation
+
+When children have a `key:` attribute, the runtime uses a map-based algorithm instead of index-based diffing:
+1. Build `key → { vnode, domNode }` map from the old children
+2. For each new child, look up its key and patch the existing DOM node in place
+3. Remove any old keyed nodes not present in the new list
+4. Reorder to match new order with `insertBefore`
+
+This preserves DOM identity (input focus, scroll position, CSS transitions) across list updates.
+
+### Global store batching
+
+`Tela.store()` subscribers are notified **asynchronously** via a microtask (`Promise.resolve().then()`). Multiple synchronous writes to the same store in one event handler produce exactly one subscriber pass per tick, avoiding redundant re-renders across components.
+
+### No-op guard
+
+Both `Tela.reactive()` and `Tela.store()` skip all update logic when `newValue === oldValue`, preventing cascading re-renders from identity-preserving writes.
 
 ---
 

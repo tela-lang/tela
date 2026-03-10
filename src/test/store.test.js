@@ -308,29 +308,34 @@ test('Tela.store returns same proxy for same name', () => {
   assert.strictEqual(a, b, 'same proxy returned');
 });
 
-test('writing to store triggers subscribers', () => {
+const tick = () => new Promise(resolve => setImmediate(resolve));
+
+test('writing to store triggers subscribers', async () => {
   const { TelaRuntime } = require('../runtime');
   const rt = new TelaRuntime();
   const s = rt.store('Counter', { n: 0 });
   let calls = 0;
   rt.subscribeStore('Counter', () => calls++);
   s.n = 1;
+  await tick();
   assert.strictEqual(calls, 1);
   s.n = 2;
+  await tick();
   assert.strictEqual(calls, 2);
 });
 
-test('writing same value to store is a no-op', () => {
+test('writing same value to store is a no-op', async () => {
   const { TelaRuntime } = require('../runtime');
   const rt = new TelaRuntime();
   const s = rt.store('NoOp', { x: 5 });
   let calls = 0;
   rt.subscribeStore('NoOp', () => calls++);
   s.x = 5; // same value
+  await tick();
   assert.strictEqual(calls, 0);
 });
 
-test('unsubscribeStore stops receiving updates', () => {
+test('unsubscribeStore stops receiving updates', async () => {
   const { TelaRuntime } = require('../runtime');
   const rt = new TelaRuntime();
   const s = rt.store('Unsub', { x: 0 });
@@ -338,13 +343,15 @@ test('unsubscribeStore stops receiving updates', () => {
   const fn = () => calls++;
   rt.subscribeStore('Unsub', fn);
   s.x = 1;
+  await tick();
   assert.strictEqual(calls, 1);
   rt.unsubscribeStore('Unsub', fn);
   s.x = 2;
+  await tick();
   assert.strictEqual(calls, 1, 'no more calls after unsubscribe');
 });
 
-test('multiple subscribers all notified', () => {
+test('multiple subscribers all notified', async () => {
   const { TelaRuntime } = require('../runtime');
   const rt = new TelaRuntime();
   const s = rt.store('Multi', { v: 0 });
@@ -352,6 +359,7 @@ test('multiple subscribers all notified', () => {
   rt.subscribeStore('Multi', () => a++);
   rt.subscribeStore('Multi', () => b++);
   s.v = 1;
+  await tick();
   assert.strictEqual(a, 1);
   assert.strictEqual(b, 1);
 });

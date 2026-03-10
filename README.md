@@ -14,7 +14,7 @@
 
 <p align="center">
   Write components in <code>.tela</code> files — state, logic, view, and styles all in one place.<br>
-  The compiler outputs vanilla JS and scoped CSS. No virtual DOM, no build toolchain, no framework lock-in.
+  The compiler outputs vanilla JS and scoped CSS. Lightweight virtual DOM, no build toolchain, no framework lock-in.
 </p>
 
 ---
@@ -22,7 +22,7 @@
 ## ✨ Features
 
 - **Single File Components** — state, logic, view, and styles live in one `.tela` file
-- **Reactive by default** — Proxy-based state triggers minimal, targeted DOM updates
+- **Reactive by default** — Proxy-based state triggers virtual DOM diffing and targeted DOM updates
 - **Scoped CSS** — styles compile to unique class names with zero bleed between components
 - **Tiny runtime** — ~10KB, zero dependencies, ships as a UMD bundle
 - **Backend-agnostic** — works with Spring Boot, Express, Flask, or plain static files
@@ -310,6 +310,26 @@ Run `mvn spring-boot:run` and Maven will compile all `.tela` files automatically
 ## 🌍 Live Demo
 
 **[Spring PetClinic → Tela](https://github.com/tela-lang/tela/tree/main/examples/petclinic-tela)** — a fully functional CRUD app with Owners, Pets, Vets, and Visits, built with Tela + Spring Boot + H2. Clone it, run `mvn spring-boot:run`, and see a complete multi-component Tela app in production form.
+
+---
+
+## 🏗 Architecture
+
+Tela uses a **Virtual DOM with component-level re-rendering**. Here is the full picture:
+
+| Layer | What happens |
+|-------|-------------|
+| **Compiler** | `.tela` source → `ComponentDef` object (plain JS + CSS). No runtime template evaluation. |
+| **Reactive state** | `Tela.reactive()` wraps component state in a `Proxy`. Any state write immediately calls `instance.update()`. |
+| **Virtual DOM** | Each `update()` call re-runs the component's render function, producing a new vnode tree. |
+| **Diffing** | `_patchChildren` / `_patchNode` diff old vs new vnodes, touching only the DOM nodes that actually changed. |
+| **Keyed lists** | Children with a `key:` attribute use map-based reconciliation — DOM nodes are reused by key, not by index. |
+| **Global store** | `Tela.store()` is a named, shared `Proxy`. Writes batch subscriber notifications via a microtask, so multiple store mutations in one tick produce a single re-render pass across all subscribing components. |
+| **No-op guard** | Both `reactive()` and `store()` skip re-renders when the new value `=== ` the old value. |
+
+**Granularity:** re-renders are **per-component**, not per-property. When any piece of state inside a component changes, that component's subtree is re-diffed. Child components are reused by identity (cursor-based); only props differences are patched through.
+
+This is the same model as React/Preact/Vue, deliberately chosen for predictability and debuggability over more aggressive compile-time optimisations.
 
 ---
 

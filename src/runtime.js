@@ -9,11 +9,18 @@ class TelaRuntime {
   store(name, initialState = {}) {
     if (this._stores[name]) return this._stores[name].proxy;
     const subscribers = new Set();
+    let scheduled = false;
     const proxy = new Proxy({ ...initialState }, {
       set: (target, key, value) => {
         if (target[key] === value) return true;
         target[key] = value;
-        for (const update of subscribers) update();
+        if (subscribers.size > 0 && !scheduled) {
+          scheduled = true;
+          Promise.resolve().then(() => {
+            scheduled = false;
+            for (const update of subscribers) update();
+          });
+        }
         return true;
       }
     });
@@ -63,6 +70,7 @@ class TelaRuntime {
   reactive(initialState, onUpdate, watchers = {}) {
     return new Proxy(initialState, {
       set: (target, key, value) => {
+        if (target[key] === value) return true; // no-op guard: skip re-render when value unchanged
         target[key] = value;
         if (watchers[key]) watchers[key]();
         if (onUpdate) onUpdate();
@@ -222,6 +230,7 @@ class TelaRuntime {
   // Apply all attributes to a fresh element
   _applyAttributes(el, attrs) {
     Object.entries(attrs).forEach(([key, value]) => {
+      if (key === 'key') return; // key is a reconciliation hint, not a real DOM attribute
       if (key.startsWith('on') && typeof value === 'function') {
         const eventName = key.toLowerCase().substring(2);
         el.addEventListener(eventName, value);
@@ -311,6 +320,7 @@ class TelaRuntime {
       const oldVal = oldAttrs[key];
       const newVal = newAttrs[key];
 
+      if (key === 'key') continue; // key is a reconciliation hint, not a real DOM attribute
       if (oldVal === newVal) continue;
 
       if (key === 'style') {
@@ -348,9 +358,15 @@ class TelaRuntime {
     const oldFlat = this.normalizeChildren(oldChildren);
     const newFlat = this.normalizeChildren(newChildren);
 
-    // Snapshot current DOM children (live NodeList changes during mutations)
-    const domChildren = Array.from(el.childNodes);
+    // Use keyed reconciliation when any new child has a key attribute
+    const hasKeys = newFlat.some(c => c && typeof c === 'object' && c.attributes && c.attributes.key != null);
+    if (hasKeys) {
+      this._patchChildrenKeyed(el, oldFlat, newFlat, instance);
+      return;
+    }
 
+    // Index-based patching (original algorithm)
+    const domChildren = Array.from(el.childNodes);
     const maxLen = Math.max(oldFlat.length, newFlat.length);
 
     for (let i = 0; i < maxLen; i++) {
@@ -366,6 +382,53 @@ class TelaRuntime {
       } else {
         this._patchNode(el, domChild, oldChild, newChild, instance);
       }
+    }
+  }
+
+  // Keyed reconciliation: reuse DOM nodes by key, then patch in place
+  _patchChildrenKeyed(el, oldFlat, newFlat, instance) {
+    // Build key → { vnode, dom } map from old children
+    const oldKeyMap = new Map();
+    const domChildren = Array.from(el.childNodes);
+    oldFlat.forEach((vnode, i) => {
+      const key = vnode && typeof vnode === 'object' && vnode.attributes && vnode.attributes.key;
+      if (key != null) oldKeyMap.set(String(key), { vnode, dom: domChildren[i] });
+    });
+
+    // For each new child, find or create a DOM node
+    const newDomNodes = newFlat.map(newVnode => {
+      const key = newVnode && typeof newVnode === 'object' && newVnode.attributes && newVnode.attributes.key;
+      if (key != null) {
+        const keyStr = String(key);
+        const existing = oldKeyMap.get(keyStr);
+        if (existing) {
+          oldKeyMap.delete(keyStr); // mark as consumed
+          // Patch the existing node in place, then return the (possibly replaced) dom node
+          const patched = this._patchNode(el, existing.dom, existing.vnode, newVnode, instance);
+          return patched;
+        }
+      }
+      // No matching key — create fresh
+      return this.createDOM(newVnode, instance);
+    });
+
+    // Remove any old keyed nodes that were not reused
+    for (const { dom } of oldKeyMap.values()) {
+      if (dom && dom.parentNode === el) el.removeChild(dom);
+    }
+
+    // Append/reorder: walk new order and ensure DOM matches
+    newDomNodes.forEach((dom, i) => {
+      if (!dom) return;
+      const current = el.childNodes[i];
+      if (current !== dom) {
+        el.insertBefore(dom, current || null);
+      }
+    });
+
+    // Remove any excess DOM nodes beyond new list length
+    while (el.childNodes.length > newDomNodes.length) {
+      el.removeChild(el.lastChild);
     }
   }
 
