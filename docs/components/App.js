@@ -18,6 +18,7 @@ const App = Tela.defineComponent({
     const nav = (p) => {
       state_App.page = p;
       state_App.sidebarOpen = false;
+      window.scrollTo(0, 0);
     };
 
     const toggleSidebar = () => {

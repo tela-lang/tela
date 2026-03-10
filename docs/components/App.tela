@@ -5,6 +5,7 @@ component App {
   function nav(p) {
     page = p
     sidebarOpen = false
+    window.scrollTo(0, 0)
   }
 
   function toggleSidebar() {

@@ -579,7 +579,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
             // locals (loop vars, params) are already in JS scope — no transformation needed
             return `\`${val}\``;
           }
-          return `"${expr.value}"`;
+          return `"${expr.value.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
+
         }
         if (expr.value === null) return 'null';
         return String(expr.value);
