@@ -24,9 +24,11 @@ class Compiler {
 
     const enumLines = (ast.enums || []).map(e => this.compileEnum(e)).join('\n');
     const modelLines = (ast.models || []).map(m => this.compileModel(m)).join('\n');
-    const js = ast.components.map(component => this.compileComponent(component)).join('\n\n');
+    const storeNames = new Set((ast.stores || []).map(s => s.name));
+    const storeLines = (ast.stores || []).map(s => this.compileStore(s)).join('\n');
+    const js = ast.components.map(component => this.compileComponent(component, storeNames)).join('\n\n');
 
-    const parts = [importLines, enumLines, modelLines, js].filter(Boolean);
+    const parts = [importLines, enumLines, modelLines, storeLines, js].filter(Boolean);
     const output = parts.join('\n\n');
 
     return {
@@ -47,7 +49,18 @@ class Compiler {
     return modelDecl.exported ? `export ${decl}` : decl;
   }
 
-  compileComponent(component) {
+  compileStore(storeDecl) {
+    const fields = storeDecl.fields.map(f => {
+      const val = f.defaultValue
+        ? this.compileExpression(f.defaultValue, new Set(), '')
+        : 'null';
+      return `${f.name}: ${val}`;
+    }).join(', ');
+    const decl = `const ${storeDecl.name} = Tela.store('${storeDecl.name}', { ${fields} });`;
+    return storeDecl.exported ? `export ${decl}` : decl;
+  }
+
+  compileComponent(component, knownStoreNames = new Set()) {
     this.stateVariables.clear();
     this.propVariables.clear();
     this.computedVariables.clear();
@@ -58,6 +71,13 @@ class Compiler {
     // Route vars behave like state (reads/writes go through state_X.name)
     (component.routes || []).forEach(r => this.stateVariables.add(r.name));
 
+    // Route setup: detect path (String) and params (Object) route vars
+    const routes = component.routes || [];
+    const pathRoute = routes.find(r => r.valueType === 'String');
+    const paramsRoute = routes.find(r => r.valueType === 'Object');
+    const routePatterns = pathRoute ? this._buildRoutePatterns(component) : [];
+    const patternsJson = JSON.stringify(routePatterns);
+
     const stateInit = [
       ...component.state.map(s => {
         const value = s.defaultValue
@@ -65,7 +85,16 @@ class Compiler {
           : 'null';
         return `${s.name}: ${value}`;
       }),
-      ...(component.routes || []).map(r => `${r.name}: window.location.pathname`)
+      ...(pathRoute
+        ? routePatterns.length > 0
+          ? [`${pathRoute.name}: Tela.matchRoute(${patternsJson}, window.location.pathname).pattern`]
+          : [`${pathRoute.name}: window.location.pathname`]
+        : []
+      ),
+      ...(paramsRoute
+        ? [`${paramsRoute.name}: Tela.matchRoute(${patternsJson}, window.location.pathname).params`]
+        : []
+      )
     ].join(',\n      ');
 
     const functions = component.functions
@@ -74,19 +103,38 @@ class Compiler {
 
     // Routing setup: navigate() + popstate listener + cleanup
     const userFunctionNames = new Set((component.functions || []).map(f => f.name));
-    const routeSetup = (component.routes || []).map(r => {
-      const statePath = `state_${component.name}.${r.name}`;
-      const handlerName = `_onPopState_${r.name}`;
-      const cleanupName = `_routeCleanup_${r.name}`;
+    let routeSetup = '';
+    if (routes.length > 0 && pathRoute) {
+      const statePathVar = `state_${component.name}.${pathRoute.name}`;
+      const stateParamsVar = paramsRoute ? `state_${component.name}.${paramsRoute.name}` : null;
+      const hasPatterns = routePatterns.length > 0;
+
+      const updateRouteVars = hasPatterns
+        ? [
+            `const _rm = Tela.matchRoute(${patternsJson}, dest);`,
+            `${statePathVar} = _rm.pattern;`,
+            stateParamsVar ? `${stateParamsVar} = _rm.params;` : ''
+          ].filter(Boolean).join('\n      ')
+        : `${statePathVar} = dest;`;
+
+      const popstateUpdate = hasPatterns
+        ? [
+            `const _rm = Tela.matchRoute(${patternsJson}, window.location.pathname);`,
+            `${statePathVar} = _rm.pattern;`,
+            stateParamsVar ? `${stateParamsVar} = _rm.params;` : ''
+          ].filter(Boolean).join('\n      ')
+        : `${statePathVar} = window.location.pathname;`;
+
       const navigateFn = userFunctionNames.has('navigate') ? '' :
-        `const navigate = (dest) => {\n      window.history.pushState(null, '', dest);\n      ${statePath} = dest;\n      instance.update();\n    };`;
-      return [
+        `const navigate = (dest) => {\n      window.history.pushState(null, '', dest);\n      ${updateRouteVars}\n      instance.update();\n    };`;
+
+      routeSetup = [
         navigateFn,
-        `const ${handlerName} = () => { ${statePath} = window.location.pathname; instance.update(); };`,
-        `window.addEventListener('popstate', ${handlerName});`,
-        `const ${cleanupName} = () => { window.removeEventListener('popstate', ${handlerName}); };`
+        `const _onPopState_${pathRoute.name} = () => { ${popstateUpdate} instance.update(); };`,
+        `window.addEventListener('popstate', _onPopState_${pathRoute.name});`,
+        `const _routeCleanup_${pathRoute.name} = () => { window.removeEventListener('popstate', _onPopState_${pathRoute.name}); };`
       ].filter(Boolean).join('\n    ');
-    }).join('\n\n    ');
+    }
 
     // Lifecycle hooks
     // onMount runs inline in setup() so it has closure access to state/functions.
@@ -99,22 +147,34 @@ class Compiler {
     const otherHooks = (component.lifecycleHooks || []).filter(h => h.hookName !== 'onMount');
 
     // Append route cleanup to onDestroy if there are route declarations
-    const routeCleanupCalls = (component.routes || [])
-      .map(r => `_routeCleanup_${r.name}();`)
-      .join('\n      ');
+    const routeCleanupCalls = pathRoute
+      ? `_routeCleanup_${pathRoute.name}();`
+      : '';
+
+    // Store subscriptions (must be computed before lifecycleProps)
+    const referencedStores = this._collectStoreRefs(component, knownStoreNames);
+    const storeSubscriptions = referencedStores.map(s =>
+      `Tela.subscribeStore('${s}', instance.update);`
+    ).join('\n    ');
+    const storeUnsubscriptions = referencedStores.map(s =>
+      `Tela.unsubscribeStore('${s}', instance.update);`
+    ).join('\n      ');
 
     const lifecycleProps = otherHooks.map(hook => {
       let body = this.compileStatements(hook.body, component.name);
-      if (hook.hookName === 'onDestroy' && routeCleanupCalls) {
-        body = `${body}\n      ${routeCleanupCalls}`;
+      if (hook.hookName === 'onDestroy') {
+        if (routeCleanupCalls) body = `${body}\n      ${routeCleanupCalls}`;
+        if (storeUnsubscriptions) body = `${body}\n      ${storeUnsubscriptions}`;
       }
       return `${hook.hookName}: function() {\n      ${body}\n    }`;
     });
 
-    // If there are routes but no onDestroy hook, emit one for cleanup
+    // If there are routes or store refs but no onDestroy hook, emit one for cleanup
     const hasOnDestroy = otherHooks.some(h => h.hookName === 'onDestroy');
-    if (routeCleanupCalls && !hasOnDestroy) {
-      lifecycleProps.push(`onDestroy: function() {\n      ${routeCleanupCalls}\n    }`);
+    const needsOnDestroy = (routeCleanupCalls || storeUnsubscriptions) && !hasOnDestroy;
+    if (needsOnDestroy) {
+      const cleanupBody = [routeCleanupCalls, storeUnsubscriptions].filter(Boolean).join('\n      ');
+      lifecycleProps.push(`onDestroy: function() {\n      ${cleanupBody}\n    }`);
     }
 
     const lifecyclePropsStr = lifecycleProps.join(',\n    ');
@@ -158,6 +218,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
     }, instance.update, ${watcherEntries ? `{ ${watcherEntries} }` : '{}'});
 
     ${routeSetup}
+
+    ${storeSubscriptions}
 
     ${computedBlock}
 
@@ -285,9 +347,81 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
         return `for (${init}; ${cond}; ${update}) {\n        ${body}\n      }`;
       }
 
+      case ASTType.MEMBER_ASSIGN_STMT: {
+        const target = this.compileExpression(stmt.target, localVars, componentName);
+        const value = this.compileExpression(stmt.value, localVars, componentName);
+        return `${target} = ${value};`;
+      }
+
       default:
         return '';
     }
+  }
+
+  // Collect all store names referenced anywhere in the component
+  _collectStoreRefs(component, storeNames) {
+    if (storeNames.size === 0) return [];
+    const found = new Set();
+    const walkExpr = (node) => {
+      if (!node || typeof node !== 'object') return;
+      if (node.type === ASTType.IDENTIFIER && storeNames.has(node.name)) {
+        found.add(node.name);
+      }
+      if (node.type === ASTType.MEMBER_EXPR) {
+        // Check if root object is a store name
+        let root = node;
+        while (root.type === ASTType.MEMBER_EXPR) root = root.object;
+        if (root.type === ASTType.IDENTIFIER && storeNames.has(root.name)) {
+          found.add(root.name);
+        }
+      }
+      for (const key of Object.keys(node)) {
+        if (key === 'type') continue;
+        const val = node[key];
+        if (Array.isArray(val)) val.forEach(walkExpr);
+        else if (val && typeof val === 'object') walkExpr(val);
+      }
+    };
+    component.functions.forEach(fn => fn.body.forEach(walkExpr));
+    (component.lifecycleHooks || []).forEach(h => h.body.forEach(walkExpr));
+    (component.computed || []).forEach(c => walkExpr(c.expression));
+    (component.watchers || []).forEach(w => w.body.forEach(walkExpr));
+    if (component.view) walkExpr(component.view.root);
+    return [...found];
+  }
+
+  // Extract route patterns from a view-level switch on the path variable
+  _buildRoutePatterns(component) {
+    if (!component.view) return [];
+    const pathRoute = (component.routes || []).find(r => r.valueType === 'String');
+    if (!pathRoute) return [];
+    return this._findPatternsInChildren([component.view.root], pathRoute.name);
+  }
+
+  _findPatternsInChildren(nodes, varName) {
+    const patterns = [];
+    for (const node of nodes) {
+      if (!node) continue;
+      if (node.type === ASTType.VIEW_SWITCH) {
+        const disc = node.discriminant;
+        if (disc && disc.type === ASTType.IDENTIFIER && disc.name === varName) {
+          for (const c of node.cases) {
+            if (c.test && c.test.type === ASTType.LITERAL && typeof c.test.value === 'string') {
+              patterns.push(c.test.value);
+            }
+          }
+        }
+      }
+      if (node.children) patterns.push(...this._findPatternsInChildren(node.children, varName));
+      if (node.consequent) patterns.push(...this._findPatternsInChildren(node.consequent, varName));
+      if (node.alternate) patterns.push(...this._findPatternsInChildren(node.alternate, varName));
+      if (node.cases) {
+        for (const c of node.cases) {
+          if (c.children) patterns.push(...this._findPatternsInChildren(c.children, varName));
+        }
+      }
+    }
+    return [...new Set(patterns)];
   }
 
   compileView(view, componentName) {

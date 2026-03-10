@@ -68,6 +68,7 @@ class Parser {
     const imports = [];
     const enums = [];
     const models = [];
+    const stores = [];
     const components = [];
 
     while (!this.isAtEnd()) {
@@ -81,6 +82,8 @@ class Parser {
           const e = this.parseEnum(); e.exported = true; enums.push(e);
         } else if (next.type === TokenType.KEYWORD && next.value === 'model') {
           const m = this.parseModel(); m.exported = true; models.push(m);
+        } else if (next.type === TokenType.KEYWORD && next.value === 'store') {
+          const s = this.parseStore(); s.exported = true; stores.push(s);
         } else {
           const component = this.parseComponent();
           component.exported = true;
@@ -92,6 +95,8 @@ class Parser {
         enums.push(this.parseEnum());
       } else if (token.type === TokenType.KEYWORD && token.value === 'model') {
         models.push(this.parseModel());
+      } else if (token.type === TokenType.KEYWORD && token.value === 'store') {
+        stores.push(this.parseStore());
       } else {
         this.advance(); // skip unknown tokens at top level
       }
@@ -102,6 +107,7 @@ class Parser {
       imports,
       enums,
       models,
+      stores,
       components
     };
   }
@@ -151,8 +157,8 @@ class Parser {
       } else if (token.type === TokenType.KEYWORD && token.value === 'watch') {
         body.watchers.push(this.parseWatcher());
       } else if (token.type === TokenType.KEYWORD && token.value === 'route') {
-        if (body.routes.length > 0) {
-          throw new Error(`Only one 'route' declaration is allowed per component (line ${token.line})`);
+        if (body.routes.length >= 2) {
+          throw new Error(`At most two 'route' declarations are allowed: one String (path) and one Object (params) at line ${token.line}`);
         }
         body.routes.push(this.parseRouteDecl());
       } else {
@@ -271,6 +277,26 @@ class Parser {
     return { type: ASTType.ROUTE_DECLARATION, name, valueType };
   }
 
+  parseStore() {
+    this.consume(TokenType.KEYWORD, "Expected 'store'", 'store');
+    const name = this.consume(TokenType.IDENTIFIER, 'Expected store name').value;
+    this.consume(TokenType.PUNCTUATION, "Expected '{'", '{');
+    const fields = [];
+    while (!this.check(TokenType.PUNCTUATION, '}') && !this.isAtEnd()) {
+      const fieldName = this.consume(TokenType.IDENTIFIER, 'Expected field name').value;
+      this.consume(TokenType.PUNCTUATION, "Expected ':'", ':');
+      const fieldType = this.consume(TokenType.IDENTIFIER, 'Expected field type').value;
+      let defaultValue = null;
+      if (this.check(TokenType.OPERATOR, '=')) {
+        this.advance();
+        defaultValue = this.parseExpression();
+      }
+      fields.push({ name: fieldName, type: fieldType, defaultValue });
+    }
+    this.consume(TokenType.PUNCTUATION, "Expected '}'", '}');
+    return { type: ASTType.STORE_DECL, name, fields, exported: false };
+  }
+
   // --- Statement Parsing (function / lifecycle bodies) ---
 
   parseStatements() {
@@ -346,7 +372,11 @@ class Parser {
     }
 
     // Peek ahead: identifier followed by '=' (not '==' or '=>') → assignment
+    // Also handles member assignment: Foo.bar = expr  or  Foo.bar.baz = expr
     if (token.type === TokenType.IDENTIFIER) {
+      if (this._isMemberAssignment()) {
+        return this.parseMemberAssignment();
+      }
       const next = this.peekAt(1);
       if (next && next.type === TokenType.OPERATOR && next.value === '=') {
         const target = this.advance().value;
@@ -359,6 +389,38 @@ class Parser {
     // Expression statement (function calls, etc.)
     const expr = this.parseExpression();
     return { type: ASTType.EXPR_STMT, expression: expr };
+  }
+
+  // Returns true if current position looks like Foo.bar = (member assignment)
+  _isMemberAssignment() {
+    let offset = 1;
+    // Must start with IDENTIFIER . IDENTIFIER (at least one dot)
+    const first = this.peekAt(offset);
+    if (!first || first.type !== TokenType.PUNCTUATION || first.value !== '.') return false;
+    // Walk any chain of . IDENTIFIER
+    offset++;
+    while (true) {
+      const id = this.peekAt(offset);
+      if (!id || id.type !== TokenType.IDENTIFIER) return false;
+      offset++;
+      const next = this.peekAt(offset);
+      if (!next) return false;
+      if (next.type === TokenType.OPERATOR && next.value === '=') return true;
+      if (next.type === TokenType.PUNCTUATION && next.value === '.') { offset++; continue; }
+      return false;
+    }
+  }
+
+  parseMemberAssignment() {
+    let obj = { type: ASTType.IDENTIFIER, name: this.advance().value };
+    while (this.check(TokenType.PUNCTUATION, '.')) {
+      this.advance(); // consume '.'
+      const prop = this.consume(TokenType.IDENTIFIER, 'Expected property name').value;
+      obj = { type: ASTType.MEMBER_EXPR, object: obj, property: prop, computed: false };
+    }
+    this.consume(TokenType.OPERATOR, "Expected '='", '=');
+    const value = this.parseExpression();
+    return { type: ASTType.MEMBER_ASSIGN_STMT, target: obj, value };
   }
 
   parseIfStatement() {

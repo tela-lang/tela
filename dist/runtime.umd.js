@@ -1,5 +1,5 @@
 /*!
- * Tela Runtime v0.1.0
+ * Tela Runtime v0.1.2
  * https://github.com/tela-lang/tela
  * MIT License
  */
@@ -13,6 +13,59 @@
 class TelaRuntime {
   constructor() {
     this.components = {};
+    this._stores = {};
+  }
+
+  // --- Global Store ---
+
+  store(name, initialState = {}) {
+    if (this._stores[name]) return this._stores[name].proxy;
+    const subscribers = new Set();
+    const proxy = new Proxy({ ...initialState }, {
+      set: (target, key, value) => {
+        if (target[key] === value) return true;
+        target[key] = value;
+        for (const update of subscribers) update();
+        return true;
+      }
+    });
+    this._stores[name] = { proxy, subscribers };
+    return proxy;
+  }
+
+  subscribeStore(name, updateFn) {
+    if (!this._stores[name]) return;
+    this._stores[name].subscribers.add(updateFn);
+  }
+
+  unsubscribeStore(name, updateFn) {
+    if (!this._stores[name]) return;
+    this._stores[name].subscribers.delete(updateFn);
+  }
+
+  // --- Route Pattern Matching ---
+
+  matchRoute(patterns, pathname) {
+    for (const pattern of patterns) {
+      const params = this._testPattern(pattern, pathname);
+      if (params !== null) return { pattern, params };
+    }
+    return { pattern: pathname, params: {} };
+  }
+
+  _testPattern(pattern, pathname) {
+    const patParts = pattern.split('/').filter(Boolean);
+    const urlParts = pathname.split('/').filter(Boolean);
+    if (patParts.length !== urlParts.length) return null;
+    const params = {};
+    for (let i = 0; i < patParts.length; i++) {
+      if (patParts[i].startsWith(':')) {
+        params[patParts[i].slice(1)] = decodeURIComponent(urlParts[i]);
+      } else if (patParts[i] !== urlParts[i]) {
+        return null;
+      }
+    }
+    return params;
   }
 
   defineComponent(config) {

@@ -33,16 +33,28 @@ test('route declaration parses into component.routes', () => {
   assert.strictEqual(comp.routes[0].valueType, 'String');
 });
 
-test('two route declarations in one component throw a parse error', () => {
+test('two route declarations allowed: one String and one Object', () => {
+  const ast = parse(`
+    component App {
+      route path: String
+      route params: Object
+      view { div {} }
+    }
+  `);
+  assert.strictEqual(ast.components[0].routes.length, 2);
+});
+
+test('three route declarations throw a parse error', () => {
   assert.throws(() => {
     parse(`
       component App {
         route path: String
-        route subpath: String
+        route params: Object
+        route extra: String
         view { div {} }
       }
     `);
-  }, /Only one 'route' declaration/);
+  }, /At most two 'route' declarations/);
 });
 
 // ─── Compiler ────────────────────────────────────────────────────────────────

@@ -53,6 +53,7 @@ const Keywords = [
   'enum',
   'model',
   'route',
+  'store',
 ];
 
 module.exports = {

@@ -73,6 +73,12 @@ const ASTType = {
   CONTINUE_STMT: 'ContinueStatement',
   FOR_IN_STMT: 'ForInStatement',    // for (item in list) in function bodies
   FOR_CLASSIC: 'ForClassicStatement', // for (i = 0; i < n; i = i + 1)
+
+  // Member assignment (e.g. Store.field = value)
+  MEMBER_ASSIGN_STMT: 'MemberAssignStatement',
+
+  // Global store declaration
+  STORE_DECL: 'StoreDeclaration',
 };
 
 module.exports = {
