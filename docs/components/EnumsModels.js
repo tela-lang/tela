@@ -15,6 +15,8 @@ const EnumsModels = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_EnumsModels.enumCode = window.TELA_DOCS.enumCode;
       state_EnumsModels.modelCode = window.TELA_DOCS.modelCode;

@@ -54,6 +54,8 @@ const Keywords = [
   'model',
   'route',
   'store',
+  // Constructor
+  'new',
 ];
 
 module.exports = {

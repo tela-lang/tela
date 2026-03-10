@@ -17,6 +17,8 @@ const Loops = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_Loops.whileCode = window.TELA_DOCS.whileCode;
       state_Loops.breakContinueCode = window.TELA_DOCS.breakContinueCode;

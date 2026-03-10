@@ -1,0 +1,106 @@
+component OwnerDetail {
+  prop id: String
+
+  state owner: Object = null
+  state pets: Array = []
+  state loading: Boolean = true
+  state error: String = ""
+
+  onMount {
+    loadOwner()
+  }
+
+  function navigate(dest) {
+    window.history.pushState(null, "", dest)
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  }
+
+  async function loadOwner() {
+    loading = true
+    error = ""
+    try {
+      ownerResp = await fetch("/api/owners/" + id)
+      owner = await ownerResp.json()
+      petsResp = await fetch("/api/owners/" + id + "/pets")
+      pets = await petsResp.json()
+    } catch (e) {
+      error = "Failed to load owner details."
+    } finally {
+      loading = false
+    }
+  }
+
+  view {
+    div {
+      div {
+        style { margin-bottom: "24px" }
+        button {
+          style { background: "transparent" color: "#34786e" border: "none" padding: 0 cursor: "pointer" font-size: "14px" font-weight: "600" }
+          content: "← Back to Owners"
+          @click: navigate("/owners")
+        }
+      }
+
+      if (error !== "") {
+        div {
+          style { background: "#fff3f3" border: "1px solid #ffcdd2" border-radius: "6px" padding: "12px 16px" margin-bottom: "16px" color: "#c62828" font-size: "14px" }
+          content: "${error}"
+        }
+      }
+
+      if (loading) {
+        p { style { color: "#888" } content: "Loading..." }
+      } else {
+        div {
+          div {
+            style { background: "white" border-radius: "8px" box-shadow: "0 2px 4px rgba(0,0,0,0.05)" padding: "24px" margin-bottom: "24px" }
+            h2 { style { margin: "0 0 4px" color: "#2c3e50" } content: "${owner.firstName} ${owner.lastName}" }
+            p { style { margin: "4px 0" color: "#666" font-size: "15px" } content: "${owner.address ?? '—'}, ${owner.city ?? '—'}" }
+            p { style { margin: "4px 0" color: "#888" font-size: "14px" } content: "📞 ${owner.telephone ?? '—'}" }
+          }
+
+          h3 { style { margin: "0 0 16px" color: "#2c3e50" } content: "Pets" }
+
+          if (pets.length === 0) {
+            p { style { color: "#888" } content: "No pets registered." }
+          } else {
+            div {
+              style { background: "white" border-radius: "8px" box-shadow: "0 2px 4px rgba(0,0,0,0.05)" overflow: "hidden" }
+              table {
+                style { width: "100%" border-collapse: "collapse" }
+                thead {
+                  tr {
+                    style { background: "#f8f9fa" }
+                    th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Name" }
+                    th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Type" }
+                    th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Birth Date" }
+                    th { style { padding: "12px 16px" text-align: "left" color: "#555" font-weight: "600" border-bottom: "1px solid #e0e0e0" } content: "Actions" }
+                  }
+                }
+                tbody {
+                  for (p in pets) {
+                    tr {
+                      key: p.id
+                      style { border-bottom: "1px solid #f0f0f0" }
+                      td { style { padding: "12px 16px" font-weight: "500" } content: "${p.name}" }
+                      td { style { padding: "12px 16px" color: "#666" } content: "${p.type ?? '—'}" }
+                      td { style { padding: "12px 16px" color: "#666" } content: "${p.birthDate ?? 'Unknown'}" }
+                      td {
+                        style { padding: "12px 16px" }
+                        button {
+                          style { background: "#34786e" color: "white" border: "none" padding: "4px 12px" border-radius: "4px" cursor: "pointer" font-size: "13px" }
+                          content: "View"
+                          @click: navigate("/pets/" + p.id)
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

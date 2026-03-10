@@ -1,5 +1,6 @@
 component App {
   route path: String
+  route params: Object
 
   function goOwners() { navigate("/owners") }
   function goPets()   { navigate("/pets") }
@@ -56,8 +57,12 @@ component App {
         switch (path) {
           case "/owners":
             Owners {}
+          case "/owners/:id":
+            OwnerDetail { id: params.id }
           case "/pets":
             Pets {}
+          case "/pets/:id":
+            PetDetail { id: params.id }
           case "/vets":
             Vets {}
           case "/visits":

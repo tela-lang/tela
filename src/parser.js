@@ -1055,6 +1055,29 @@ class Parser {
       return { type: ASTType.LITERAL, value: null };
     }
 
+    // new ClassName(args)
+    if (token.type === TokenType.KEYWORD && token.value === 'new') {
+      this.advance();
+      const classTok = this.consume(TokenType.IDENTIFIER, 'Expected class name after new');
+      let callee = { type: ASTType.IDENTIFIER, name: classTok.value };
+      // Allow chained member access for namespaced constructors (e.g. new a.B())
+      while (this.check(TokenType.PUNCTUATION, '.')) {
+        this.advance();
+        const prop = this.advance();
+        callee = { type: ASTType.MEMBER_EXPR, object: callee, property: prop.value, computed: false };
+      }
+      const args = [];
+      if (this.check(TokenType.PUNCTUATION, '(')) {
+        this.advance();
+        while (!this.check(TokenType.PUNCTUATION, ')')) {
+          args.push(this.parseExpression());
+          if (this.check(TokenType.PUNCTUATION, ',')) this.advance();
+        }
+        this.consume(TokenType.PUNCTUATION, "Expected ')'", ')');
+      }
+      return { type: ASTType.NEW_EXPR, callee, args };
+    }
+
     // Identifiers
     if (token.type === TokenType.IDENTIFIER) {
       this.advance();

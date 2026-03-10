@@ -14,6 +14,8 @@ const AsyncData = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_AsyncData.asyncCode = window.TELA_DOCS.asyncCode;
 

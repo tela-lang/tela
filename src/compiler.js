@@ -642,6 +642,14 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
         return `await ${expression}`;
       }
 
+      case ASTType.NEW_EXPR: {
+        const callee = this.compileExpression(expr.callee, locals, componentName);
+        const args = expr.args
+          .map(a => this.compileExpression(a, locals, componentName))
+          .join(', ');
+        return `new ${callee}(${args})`;
+      }
+
       case ASTType.OPTIONAL_CHAIN: {
         const obj = this.compileExpression(expr.object, locals, componentName);
         return `${obj}?.${expr.property}`;

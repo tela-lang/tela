@@ -73,6 +73,11 @@ component Owners {
     }
   }
 
+  function navigate(dest) {
+    window.history.pushState(null, "", dest)
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  }
+
   function toggleForm() {
     showForm = !showForm
     formError = ""
@@ -185,13 +190,19 @@ component Owners {
             tbody {
               for (o in owners) {
                 tr {
+                  key: o.id
                   style { border-bottom: "1px solid #f0f0f0" }
                   td { style { padding: "12px 16px" font-weight: "500" } content: "${o.firstName} ${o.lastName}" }
                   td { style { padding: "12px 16px" color: "#666" } content: "${o.address ?? '—'}" }
                   td { style { padding: "12px 16px" color: "#666" } content: "${o.city ?? '—'}" }
                   td { style { padding: "12px 16px" color: "#666" } content: "${o.telephone ?? '—'}" }
                   td {
-                    style { padding: "12px 16px" }
+                    style { padding: "12px 16px" display: "flex" gap: "8px" }
+                    button {
+                      style { background: "#34786e" color: "white" border: "none" padding: "4px 12px" border-radius: "4px" cursor: "pointer" font-size: "13px" }
+                      content: "View"
+                      @click: navigate("/owners/" + o.id)
+                    }
                     button {
                       style { background: "#ff4444" color: "white" border: "none" padding: "4px 12px" border-radius: "4px" cursor: "pointer" font-size: "13px" }
                       content: "Delete"

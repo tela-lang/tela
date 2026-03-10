@@ -14,6 +14,8 @@ const TwoWayBinding = Tela.defineComponent({
 
     
 
+    
+
     // onMount
     state_TwoWayBinding.bindCode = window.TELA_DOCS.bindCode;
 

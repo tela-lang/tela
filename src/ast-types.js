@@ -35,6 +35,9 @@ const ASTType = {
   // Async
   AWAIT_EXPR: 'AwaitExpression',
 
+  // Constructor call
+  NEW_EXPR: 'NewExpression',
+
   // Parent-child communication
   EMIT_STMT: 'EmitStatement',
 

@@ -119,6 +119,7 @@ component Vets {
           style { display: "grid" grid-template-columns: "repeat(3, 1fr)" gap: "16px" }
           for (v in vets) {
             div {
+              key: v.id
               style {
                 background: "white"
                 border-radius: "8px"
