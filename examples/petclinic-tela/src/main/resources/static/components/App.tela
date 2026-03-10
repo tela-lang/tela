@@ -2,11 +2,6 @@ component App {
   route path: String
   route params: Object
 
-  function goOwners() { navigate("/owners") }
-  function goPets()   { navigate("/pets") }
-  function goVets()   { navigate("/vets") }
-  function goVisits() { navigate("/visits") }
-
   view {
     div {
       style { font-family: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif" }
@@ -68,7 +63,7 @@ component App {
           case "/visits":
             Visits {}
           default:
-            Home { goOwners: goOwners goPets: goPets goVets: goVets goVisits: goVisits }
+            Home {}
         }
       }
     }

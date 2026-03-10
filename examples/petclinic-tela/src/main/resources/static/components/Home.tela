@@ -1,9 +1,4 @@
 component Home {
-  prop goOwners: Function
-  prop goPets: Function
-  prop goVets: Function
-  prop goVisits: Function
-
   view {
     div {
       div {
@@ -37,7 +32,7 @@ component Home {
             text-align: "center"
             cursor: "pointer"
           }
-          @click: goOwners
+          @click: navigate("/owners")
           div { style { font-size: "40px" margin-bottom: "12px" } content: "👤" }
           h3 { style { margin: "0 0 8px" color: "#34786e" } content: "Owners" }
           p { style { margin: 0 color: "#666" font-size: "14px" } content: "Manage pet owners" }
@@ -52,7 +47,7 @@ component Home {
             text-align: "center"
             cursor: "pointer"
           }
-          @click: goPets
+          @click: navigate("/pets")
           div { style { font-size: "40px" margin-bottom: "12px" } content: "🐶" }
           h3 { style { margin: "0 0 8px" color: "#34786e" } content: "Pets" }
           p { style { margin: 0 color: "#666" font-size: "14px" } content: "View all registered pets" }
@@ -67,7 +62,7 @@ component Home {
             text-align: "center"
             cursor: "pointer"
           }
-          @click: goVets
+          @click: navigate("/vets")
           div { style { font-size: "40px" margin-bottom: "12px" } content: "🩺" }
           h3 { style { margin: "0 0 8px" color: "#34786e" } content: "Vets" }
           p { style { margin: 0 color: "#666" font-size: "14px" } content: "Our veterinarians" }
@@ -82,7 +77,7 @@ component Home {
             text-align: "center"
             cursor: "pointer"
           }
-          @click: goVisits
+          @click: navigate("/visits")
           div { style { font-size: "40px" margin-bottom: "12px" } content: "📋" }
           h3 { style { margin: "0 0 8px" color: "#34786e" } content: "Visits" }
           p { style { margin: 0 color: "#666" font-size: "14px" } content: "All clinic visits" }

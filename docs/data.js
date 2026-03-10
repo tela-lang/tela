@@ -123,6 +123,27 @@ view {
   }
 }`,
 
+  propsDefaultCode: `component Badge {
+  prop label: String = "Badge"
+  prop color: String = "#34786e"
+
+  view {
+    span {
+      style { background: color color: "white" padding: "4px 10px" border-radius: 4px }
+      content: "\${label}"
+    }
+  }
+}
+
+// Caller can omit props that have defaults:
+view {
+  div {
+    Badge {}                           // "Badge" in teal
+    Badge { label: "Sale" }            // "Sale" in teal
+    Badge { label: "Hot" color: "red" } // fully specified
+  }
+}`,
+
   // Template Syntax
   templateCode: `view {
   div {
@@ -586,6 +607,41 @@ public String index() {
   view {
     div {
       button { content: "Home" @click: navigate("/") }
+    }
+  }
+}`,
+
+  navigateAllCode: `// navigate() is available in EVERY component — no route declaration needed.
+// The compiler injects it automatically so any component can trigger navigation.
+
+component OwnerCard {
+  prop id: String = ""
+  prop name: String = "Unknown"
+
+  view {
+    div {
+      p { content: "\${name}" }
+      button {
+        content: "View Details"
+        @click: navigate("/owners/" + id)
+      }
+    }
+  }
+}
+
+// If you define your own navigate(), the injection is skipped:
+component NavLink {
+  prop href: String = "/"
+
+  function navigate(dest) {
+    window.history.pushState(null, "", dest)
+    window.dispatchEvent(new PopStateEvent("popstate"))
+  }
+
+  view {
+    button {
+      @click: navigate(href)
+      content: "Go"
     }
   }
 }`,

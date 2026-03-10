@@ -7,6 +7,7 @@ class Compiler {
     this.stateVariables = new Set();
     this.propVariables = new Set();
     this.computedVariables = new Set();
+    this.propDefaults = new Map();
     this.cssRules = [];
     this.uniqueIdCounter = 0;
   }
@@ -64,9 +65,16 @@ class Compiler {
     this.stateVariables.clear();
     this.propVariables.clear();
     this.computedVariables.clear();
+    this.propDefaults.clear();
 
     component.state.forEach(s => this.stateVariables.add(s.name));
-    component.props.forEach(p => this.propVariables.add(p.name));
+    component.props.forEach(p => {
+      this.propVariables.add(p.name);
+      if (p.defaultValue) {
+        const compiled = this.compileExpression(p.defaultValue, new Set(), component.name);
+        this.propDefaults.set(p.name, compiled);
+      }
+    });
     (component.computed || []).forEach(c => this.computedVariables.add(c.name));
     // Route vars are plain let variables (NOT reactive) so path+params update atomically
     // before a single instance.update() call. Do NOT add them to stateVariables.
@@ -94,6 +102,11 @@ class Compiler {
     const userFunctionNames = new Set((component.functions || []).map(f => f.name));
     let routeVarDecls = '';
     let routeSetup = '';
+    // Auto-inject a simple navigate() for components with no route declarations
+    let universalNavigate = '';
+    if (routes.length === 0 && !userFunctionNames.has('navigate')) {
+      universalNavigate = `const navigate = (dest) => {\n      window.history.pushState(null, '', dest);\n      window.dispatchEvent(new PopStateEvent('popstate'));\n    };`;
+    }
     if (routes.length > 0 && pathRoute) {
       // Declare route vars as plain let (NOT part of Tela.reactive)
       const initPath = routePatterns.length > 0
@@ -221,6 +234,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
     ${routeVarDecls}
 
     ${routeSetup}
+
+    ${universalNavigate}
 
     ${storeSubscriptions}
 
@@ -572,8 +587,12 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
               val = val.replace(regex, `\${state_${componentName}.$1`);
             });
             this.propVariables.forEach(v => {
+              const def = this.propDefaults.get(v);
+              const replacement = def !== undefined
+                ? `\${(instance.props.$1 ?? ${def})`
+                : `\${instance.props.$1`;
               const regex = new RegExp(`\\$\\{(${v})(?=[.\\[}])`, 'g');
-              val = val.replace(regex, `\${instance.props.$1`);
+              val = val.replace(regex, replacement);
             });
             this.computedVariables.forEach(v => {
               const regex = new RegExp(`\\$\\{(${v})(?=[.\\[}])`, 'g');
@@ -595,6 +614,8 @@ ${exportKeyword}const ${component.name} = Tela.defineComponent({
           return `state_${componentName}.${expr.name}`;
         }
         if (this.propVariables.has(expr.name)) {
+          const def = this.propDefaults.get(expr.name);
+          if (def !== undefined) return `(instance.props.${expr.name} ?? ${def})`;
           return `instance.props.${expr.name}`;
         }
         if (this.computedVariables.has(expr.name)) {

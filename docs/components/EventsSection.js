@@ -13,6 +13,11 @@ const EventsSection = Tela.defineComponent({
 
     
 
+    const navigate = (dest) => {
+      window.history.pushState(null, '', dest);
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    };
+
     
 
     

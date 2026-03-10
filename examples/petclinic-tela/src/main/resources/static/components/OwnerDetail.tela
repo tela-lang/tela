@@ -1,5 +1,5 @@
 component OwnerDetail {
-  prop id: String
+  prop id: String = ""
 
   state owner: Object = null
   state pets: Array = []
@@ -8,11 +8,6 @@ component OwnerDetail {
 
   onMount {
     loadOwner()
-  }
-
-  function navigate(dest) {
-    window.history.pushState(null, "", dest)
-    window.dispatchEvent(new PopStateEvent("popstate"))
   }
 
   async function loadOwner() {

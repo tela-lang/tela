@@ -9,5 +9,12 @@
 .tela-PropsSection-p-8 { font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 12px }
 .tela-PropsSection-div-9 { background: #1a1a2e; border-radius: 8px; padding: 20px 24px; margin: 0 0 24px; overflow: auto }
 .tela-PropsSection-pre-10 { margin: 0; font-family: JetBrains Mono, Consolas, monospace; font-size: 14px; color: #e2e8f0; white-space: pre }
-.tela-PropsSection-h2-11 { font-size: 22px; font-weight: 700; color: #111827; margin: 32px 0 16px }
-.tela-PropsSection-p-12 { font-size: 16px; color: #6b7280; line-height: 1.8 }
+.tela-PropsSection-h2-11 { font-size: 22px; font-weight: 700; color: #111827; margin: 32px 0 12px }
+.tela-PropsSection-p-12 { font-size: 16px; color: #6b7280; line-height: 1.8; margin-bottom: 12px }
+.tela-PropsSection-div-13 { background: #1a1a2e; border-radius: 8px; padding: 20px 24px; margin: 0 0 24px; overflow: auto }
+.tela-PropsSection-pre-14 { margin: 0; font-family: JetBrains Mono, Consolas, monospace; font-size: 14px; color: #e2e8f0; white-space: pre }
+.tela-PropsSection-div-15 { background: #f0fdf4; border: 1px solid #86efac; border-radius: 8px; padding: 16px 20px; margin-bottom: 32px }
+.tela-PropsSection-div-16 { font-weight: 700; color: #166534; margin-bottom: 4px; font-size: 14px }
+.tela-PropsSection-div-17 { color: #15803d; font-size: 14px; line-height: 1.6 }
+.tela-PropsSection-h2-18 { font-size: 22px; font-weight: 700; color: #111827; margin: 0 0 16px }
+.tela-PropsSection-p-19 { font-size: 16px; color: #6b7280; line-height: 1.8 }

@@ -1,10 +1,12 @@
 component PropsSection {
   state propsCode: String = ""
   state propsUsageCode: String = ""
+  state propsDefaultCode: String = ""
 
   onMount {
     propsCode = window.TELA_DOCS.propsCode
     propsUsageCode = window.TELA_DOCS.propsUsageCode
+    propsDefaultCode = window.TELA_DOCS.propsDefaultCode
   }
 
   view {
@@ -52,7 +54,33 @@ component PropsSection {
         }
       }
       h2 {
-        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 16px" }
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "32px 0 12px" }
+        content: "Default Values"
+      }
+      p {
+        style { font-size: "16px" color: "#6b7280" line-height: "1.8" margin-bottom: "12px" }
+        content: "Assign a default after the type with = and the caller can omit that prop. The compiler emits a nullish coalescing expression so the default only applies when the parent passes null or undefined."
+      }
+      div {
+        style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 24px" overflow: "auto" }
+        pre {
+          style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
+          code { class: "language-tela" content: "${propsDefaultCode}" }
+        }
+      }
+      div {
+        style { background: "#f0fdf4" border: "1px solid #86efac" border-radius: "8px" padding: "16px 20px" margin-bottom: "32px" }
+        div {
+          style { font-weight: "700" color: "#166534" margin-bottom: "4px" font-size: "14px" }
+          content: "Compiled output"
+        }
+        div {
+          style { color: "#15803d" font-size: "14px" line-height: "1.6" }
+          content: "prop color: String = \"#34786e\" compiles to (instance.props.color ?? \"#34786e\") at every point of access, including inside template literals."
+        }
+      }
+      h2 {
+        style { font-size: "22px" font-weight: "700" color: "#111827" margin: "0 0 16px" }
         content: "Callback Props"
       }
       p {

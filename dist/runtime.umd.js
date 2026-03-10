@@ -1,5 +1,5 @@
 /*!
- * Tela Runtime v0.1.2
+ * Tela Runtime v0.2.0
  * https://github.com/tela-lang/tela
  * MIT License
  */
