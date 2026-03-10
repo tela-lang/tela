@@ -27,7 +27,7 @@ component LanguageSpec {
         style { background: "#1a1a2e" border-radius: "8px" padding: "16px 24px" margin: "0 0 32px" overflow: "auto" }
         pre {
           style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "13px" color: "#e2e8f0" white-space: "pre" }
-          code { content: "${langSpecKeywords}" }
+          code { class: "nohighlight" content: "${langSpecKeywords}" }
         }
       }
 

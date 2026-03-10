@@ -79,7 +79,7 @@ component ErrorHandling {
           }
           div {
             style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
-            content: "Declare state error: String = \"\" and display it with if (error !== \"\") so users see a friendly message instead of a blank screen."
+            content: "Declare state error: String = '' and display it with if (error !== '') so users see a friendly message instead of a blank screen."
           }
         }
         div {
@@ -90,7 +90,7 @@ component ErrorHandling {
           }
           div {
             style { color: "#6b7280" font-size: "14px" line-height: "1.6" }
-            content: "Set error = \"\" at the top of your async function so stale error messages from previous calls don't linger."
+            content: "Set error = '' at the top of your async function so stale error messages from previous calls don't linger."
           }
         }
       }

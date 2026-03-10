@@ -1,10 +1,12 @@
 component Routing {
   state routingCode: String = ""
   state routingCustomNavigateCode: String = ""
+  state routingJavaCode: String = ""
 
   onMount {
     routingCode = window.TELA_DOCS.routingCode
     routingCustomNavigateCode = window.TELA_DOCS.routingCustomNavigateCode
+    routingJavaCode = window.TELA_DOCS.routingJavaCode
   }
 
   view {
@@ -63,7 +65,7 @@ component Routing {
           }
           div {
             div { style { font-weight: "700" color: "#374151" font-size: "14px" margin-bottom: "2px" } content: "navigate() pushes to history" }
-            div { style { color: "#6b7280" font-size: "14px" } content: "Calling navigate(\"/path\") calls history.pushState and updates the route variable, triggering a re-render." }
+            div { style { color: "#6b7280" font-size: "14px" } content: "Calling navigate('/path') calls history.pushState and updates the route variable, triggering a re-render." }
           }
         }
         div {
@@ -107,7 +109,7 @@ component Routing {
         style { background: "#1a1a2e" border-radius: "8px" padding: "20px 24px" margin: "0 0 16px" overflow: "auto" }
         pre {
           style { margin: 0 font-family: "JetBrains Mono, Consolas, monospace" font-size: "14px" color: "#e2e8f0" white-space: "pre" }
-          code { class: "language-java" content: "@GetMapping({\"/\", \"/about\", \"/blog\"})\npublic String index() { return \"index\"; }" }
+          code { class: "language-java" content: "${routingJavaCode}" }
         }
       }
 

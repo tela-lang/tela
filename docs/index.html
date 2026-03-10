@@ -82,7 +82,7 @@
     // Re-run highlighting whenever the page navigates (Tela re-renders)
     const highlight = () => setTimeout(() => {
       document.querySelectorAll('pre code').forEach(el => {
-        if (!el.dataset.highlighted) hljs.highlightElement(el);
+        if (!el.dataset.highlighted && !el.classList.contains('nohighlight')) hljs.highlightElement(el);
       });
     }, 50);
     highlight();
