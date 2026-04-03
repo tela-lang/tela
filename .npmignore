@@ -5,3 +5,4 @@ scripts/
 *.test.js
 node_modules/
 .git/
+dist/*.map
