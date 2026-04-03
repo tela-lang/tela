@@ -44,7 +44,7 @@ component App {
               border-radius: "20px"
               font-weight: "600"
             }
-            content: "v0.1 alpha"
+            content: "v0.3.0"
           }
         }
 

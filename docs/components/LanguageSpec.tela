@@ -17,7 +17,7 @@ component LanguageSpec {
       }
       p {
         style { font-size: "18px" color: "#4b5563" line-height: "1.8" margin-bottom: "32px" }
-        content: "Tela v0.1 — quick reference covering keywords, literals, expression precedence, statements, component members, and the compilation model."
+        content: "Tela v0.3 — quick reference covering keywords, literals, expression precedence, statements, component members, and the compilation model."
       }
 
       // Keywords

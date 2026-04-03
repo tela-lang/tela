@@ -11,14 +11,15 @@
 2. [Lexical Grammar](#lexical-grammar)
 3. [Program Structure](#program-structure)
 4. [Types](#types)
-5. [Expressions](#expressions)
-6. [Statements](#statements)
-7. [View Syntax](#view-syntax)
-8. [Style Syntax](#style-syntax)
-9. [Routing](#routing)
-10. [Runtime Architecture](#runtime-architecture)
-11. [Compilation Model](#compilation-model)
-12. [Built-in Globals](#built-in-globals)
+5. [State and Stores](#state-and-stores)
+6. [Expressions](#expressions)
+7. [Statements](#statements)
+8. [View Syntax](#view-syntax)
+9. [Style Syntax](#style-syntax)
+10. [Routing](#routing)
+11. [Runtime Architecture](#runtime-architecture)
+12. [Compilation Model](#compilation-model)
+13. [Built-in Globals](#built-in-globals)
 
 ---
 
@@ -183,6 +184,116 @@ Type annotations are hints for documentation and tooling. The compiler does not 
 | `Object`   | Plain object                 |
 
 Custom model names may be used where `Object` would appear.
+
+---
+
+## State and Stores
+
+Tela has two reactive primitives: **local state** (`state`) and **global stores** (`store`). They look similar but serve different purposes.
+
+### Local state
+
+`state` is declared inside a component. It is private to that component — no other component can read or write it — and its lifetime is tied to the component.
+
+```tela
+component Counter {
+  state count: Number = 0
+
+  function increment() {
+    count = count + 1
+  }
+
+  view {
+    div {
+      p { content: "Count: ${count}" }
+      button { content: "+" @click: increment }
+    }
+  }
+}
+```
+
+When `count` is assigned, only the `Counter` component re-renders. Nothing outside `Counter` is affected.
+
+**Use local state for:**
+- UI-only data: loading flags, form field values, open/closed toggles, selected tab
+- Anything that only one component cares about
+
+### Global store
+
+`store` is declared at the top level of a file (outside any component). Any component that references a store field is automatically subscribed to it; when a store field changes, all subscribing components re-render.
+
+```tela
+store CartStore {
+  items: Array  = []
+  total: Number = 0
+}
+
+component CartIcon {
+  view {
+    span { content: "${CartStore.items.length} items" }
+  }
+}
+
+component CartSummary {
+  view {
+    div { content: "Total: $${CartStore.total}" }
+  }
+}
+```
+
+Both `CartIcon` and `CartSummary` re-render whenever `CartStore` changes — from any component in the app. You do not need to pass the cart down as a prop.
+
+**Use a store for:**
+- Data shared between two or more components: current user, shopping cart, notification list
+- App-wide settings: theme, locale, feature flags
+- Data that needs to survive navigation between pages/views
+
+### Choosing between state and store
+
+| Question | Answer → use |
+|---|---|
+| Does only this component need this data? | `state` |
+| Do two or more components need the same data? | `store` |
+| Is this a UI detail (loading spinner, input value)? | `state` |
+| Is this application data (logged-in user, shared list)? | `store` |
+| Should this reset when the component unmounts? | `state` |
+| Should this persist while the app is running? | `store` |
+
+### Using state and store together
+
+Local state and stores are often used in the same component. State handles the component's own UI concerns; the store carries shared data.
+
+```tela
+store UserStore {
+  currentUser: Object = null
+}
+
+component UserProfile {
+  state editing: Boolean = false   // local: only this component cares
+
+  function save() {
+    UserStore.currentUser = updatedUser  // write to shared store
+    editing = false
+  }
+
+  view {
+    div {
+      p { content: "Hello, ${UserStore.currentUser?.name}" }
+      if (editing) {
+        button { content: "Save" @click: save }
+      } else {
+        button { content: "Edit" @click: editing = true }
+      }
+    }
+  }
+}
+```
+
+### Store subscriptions
+
+The compiler automatically detects which stores a component references and generates the subscribe/unsubscribe calls. You do not need to manage subscriptions manually.
+
+Store writes are batched via a microtask: if multiple store fields are written in the same event handler, subscribing components re-render only once per tick.
 
 ---
 

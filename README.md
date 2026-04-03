@@ -261,6 +261,49 @@ component UserDashboard {
 
 **Full language reference:** [SPEC.md](./SPEC.md) · [Docs site](https://tela-lang.github.io/tela)
 
+### State vs Store
+
+Tela has two reactive primitives. Knowing which to use is the most important decision in any Tela component.
+
+**`state`** — private to one component, lives and dies with it.
+
+```tela
+component Toggle {
+  state open: Boolean = false      // only Toggle cares about this
+
+  view {
+    button { content: "Toggle" @click: open = !open }
+    if (open) { p { content: "Visible" } }
+  }
+}
+```
+
+**`store`** — shared across all components that reference it, persists for the app's lifetime.
+
+```tela
+store AuthStore {
+  user: Object = null
+}
+
+component NavBar {
+  view {
+    span { content: "Hello, ${AuthStore.user?.name}" }  // re-renders on user change
+  }
+}
+
+component ProfilePage {
+  view {
+    p { content: "${AuthStore.user?.email}" }           // same store, same update
+  }
+}
+```
+
+**Rule of thumb:**
+- UI-only data (loading flag, open/close, form input) → `state`
+- Data two or more components share (current user, cart, settings) → `store`
+
+See [State and Stores in SPEC.md](./SPEC.md#state-and-stores) for the full reference.
+
 ---
 
 ## ☕ Spring Boot Integration

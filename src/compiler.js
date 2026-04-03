@@ -1,6 +1,7 @@
 const { Parser } = require('./parser');
 const { ASTType } = require('./ast-types');
 const { TokenType } = require('./token-types');
+const { makeError } = require('./diagnostics');
 
 class Compiler {
   constructor() {
@@ -13,10 +14,38 @@ class Compiler {
   }
 
   compile(source) {
-    const parser = new Parser(source);
-    const ast = parser.parse();
+    let ast;
+    try {
+      const parser = new Parser(source);
+      ast = parser.parse();
+    } catch (e) {
+      const lineMatch = e.message.match(/at line (\d+),?\s*column (\d+)/);
+      const line = lineMatch ? parseInt(lineMatch[1]) : null;
+      const col  = lineMatch ? parseInt(lineMatch[2]) : null;
+      const msg  = lineMatch ? e.message.slice(0, lineMatch.index).trim() : e.message;
+      throw new Error(makeError('E001', msg, line, col).toString());
+    }
+
     this.cssRules = [];
     this.uniqueIdCounter = 0;
+
+    // E005: duplicate component names
+    const seen = new Set();
+    for (const comp of ast.components) {
+      if (seen.has(comp.name)) {
+        throw new Error(makeError('E005', `Duplicate component name '${comp.name}'`, null, null,
+          `Each .tela file should define at most one component with a given name`).toString());
+      }
+      seen.add(comp.name);
+    }
+
+    // E006: missing view block
+    for (const comp of ast.components) {
+      if (!comp.view) {
+        throw new Error(makeError('E006', `Component '${comp.name}' is missing a view block`, null, null,
+          `Add a view { ... } block to define the component's rendered output`).toString());
+      }
+    }
 
     const importLines = (ast.imports || []).map(imp => {
       const jsPath = imp.path.replace(/\.tela$/, '.js');

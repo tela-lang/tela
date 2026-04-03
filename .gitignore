@@ -17,3 +17,7 @@ examples/**/*.js
 examples/**/*.css
 # But keep test files
 !examples/**/*.test.js
+
+# Claude Code — ignore everything except repo-local commands
+.claude/*
+!.claude/commands/
