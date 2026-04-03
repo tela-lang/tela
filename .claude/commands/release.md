@@ -59,10 +59,7 @@ Run these steps in order:
    gh release create "v$ARGUMENTS" --title "v$ARGUMENTS" --generate-notes
    ```
 
-7. Publish to npm:
-   ```
-   npm publish --access public
-   ```
+   This triggers the `publish.yml` GitHub Actions workflow which automatically runs `npm publish`.
+   Monitor it at: `https://github.com/tela-lang/tela/actions`
 
-8. Confirm success by printing the npm package URL:
-   `https://www.npmjs.com/package/@tela-lang/tela`
+7. Confirm the release URL and remind the user that npm publish is handled by CI.
